@@ -1,0 +1,6 @@
+curl -X POST --data '{"jsonrpc":"2.0","id"     :1,"method" :"info.isBootstrapped","params": {"chain":"X"}}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/info
+
+
+curl -X POST --data '{"jsonrpc":"2.0","id"     :1,"method" :"admin.getChainAliases","params": {"chain":"sqja5hGGtSFiAnawRrJyWjiW8BWoo1J1nLS6W3HSX1d26pKDv"}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/admin
+
+curl -X POST --data '{"jsonrpc":"2.0","id"     :1,"method" :"health.health"}' -H 'content-type:application/json;' 127.0.0.1:9650/ext/health

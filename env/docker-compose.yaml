@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  citizenchain:
+    image: tfm/citizenchain:1.5
+    tty: true
+    volumes:
+      - /Users/gadominguez/Documents/TFM/Proyecto/avalanche-smart-contract-quickstart:/home/avalanche/quickstart
+    networks:
+      - citizenchain
+    ports:
+      - "2650:2650"
+      - "2651:2651"
+
+networks:
+  citizenchain:
+    driver: bridge
