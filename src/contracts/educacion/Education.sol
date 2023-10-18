@@ -14,14 +14,7 @@ contract Education is TitleRegistry, Institutions {
     owner_ = msg.sender;
   }
 
-  modifier isOwner() {
-    require(owner_ == msg.sender,
-      "Caller is not the owners"
-    );
-    _;
-  }
-
-  function owner() external view returns (address) {
+  function owner3() external view returns (address) {
     return owner_;
   }
 }

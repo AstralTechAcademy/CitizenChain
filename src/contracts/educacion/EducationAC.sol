@@ -11,6 +11,13 @@ contract EducationAC {
         mOwner = msg.sender;
     }
 
+    modifier isOwner(address owner) {
+        require(owner == msg.sender,
+            "Caller is not the owners"
+        );
+        _;
+    }
+
     modifier onlyOwner()
     {
         require(mOwner == msg.sender,

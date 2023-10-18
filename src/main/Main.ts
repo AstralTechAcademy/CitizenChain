@@ -53,6 +53,24 @@ const main = async(): Promise<any> => {
   console.log(await ethers.provider.getBalance(admin.address));
   console.log(await ethers.provider.getBalance(upm.address));
 
+
+  // Transfer funds
+  const tx = {
+    to: upm.address,
+    value: ethers.utils.parseEther("20000"),
+    gasLimit: 21000,
+    gasPrice: "0x5D21DBA00",
+    chainId: 4543,
+  }
+  
+  await admin.sendTransaction(tx);
+
+  await new Promise(f => setTimeout(f, 2000));
+
+  console.log(await ethers.provider.getBalance(admin.address));
+  console.log(await ethers.provider.getBalance(upm.address));
+  
+
 }
 
 main()

@@ -21,14 +21,7 @@ contract Institutions is EducationAC {
     owner_ = msg.sender;
   }
 
-  modifier isOwner() {
-    require(owner_ == msg.sender,
-      "Caller is not the owners"
-    );
-    _;
-  }
-
-  function addInstitution(address id, string memory name) external {
+  function addInstitution(address id, string memory name) external isOwner(owner_) {
     institutions_[id] = Institution(id, name);
   }
 
@@ -36,7 +29,7 @@ contract Institutions is EducationAC {
     return institutions_[id].name_;
   }
 
-  function owner() external view returns (address) {
+  function owner2() external view returns (address) {
     return owner_;
   }
 }

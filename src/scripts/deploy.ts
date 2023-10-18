@@ -25,6 +25,16 @@ const main = async(): Promise<any> => {
 
   await storage.deployed()
   console.log(`Smart contract deployed to: ${storage.address}`)
+
+  // --------------------
+  StorageSC  = await ethers.getContractFactory("Education")
+  StorageSC = StorageSC.connect(admin);
+
+  storage = await StorageSC.deploy();
+
+  await storage.deployed()
+  console.log(`Smart contract deployed to: ${storage.address}`)
+
 }
 
 main()

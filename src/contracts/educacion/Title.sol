@@ -23,22 +23,12 @@ struct Degree {
 
 contract TitleRegistry is EducationAC {
 
-  address private owner_;
-  uint256 number = 15;
-  
+  address private owner_;  
   mapping(uint => Title) titles_;
-  mapping(address => Institution) institutions_;
   mapping(address => Degree) degrees_;
 
   constructor() public {
     owner_ = msg.sender;
-  }
-
-  modifier isOwner() {
-    require(owner_ == msg.sender,
-      "Caller is not the owners"
-    );
-    _;
   }
 
   modifier isDegreeOwner(address degree)
@@ -47,14 +37,6 @@ contract TitleRegistry is EducationAC {
         "The sender is not a valid institution for this degree"
       );
       _;
-  }
-
-  function addInstitution(address id, string memory name) external {
-    institutions_[id] = Institution(id, name);
-  }
-
-  function getInstitution(address id) external view returns (string memory) {
-    return institutions_[id].name_;
   }
 
   function addDegree(address id, address institution, string memory name) external {
@@ -73,7 +55,7 @@ contract TitleRegistry is EducationAC {
     return titles_[id];
   }
 
-  function owner() external view returns (address) {
+  function owner1() external view returns (address) {
     return owner_;
   }
 }
