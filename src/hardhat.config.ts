@@ -19,7 +19,16 @@ const forkingData = FORK_FUJI ? {
 
 export const testAccounts = [
   "0x56289e99c94b6912bfc12adc093c9b51124f0dc54ac7a766b2bc5ccf558d8027", //SPAIN
-  "0x61779b3f52f56378133a2c98a7142b34cae9312efd9283be62d9e84805ae59ea" //Ciudadano 1
+  "0x61779b3f52f56378133a2c98a7142b34cae9312efd9283be62d9e84805ae59ea", //Ciudadano 1
+  "0x73425173342a1124e99ca23a9ef57641f95d074a9d1fe63964839564f9d3f294", //UPM
+  "0x74ec9b3f18c6d42703eaa339b9abf89e1a6006a9a42d75e2b27e31d620ccc598", // UOC
+  "0x3eac583523be91059dc06d76af625b28e9e0da76c99ea4b364b41d4700f042ba", //UAM
+
+  "0x6fd251d186c51caf8f9a70033e45149cce7ad0a24c41b2f4b2f5554ba71d75c5", //Teleco
+  "0x4ef5417edc71502a3b9bafe3d55f7a4331e471d4bcf4bf39d1e9b63f77802b17", //Computer science
+  "0xd26470431709d34e25820e45e3c679edbc9e642484347674aa3c78a004e6a4d9", //Aerospacial
+  "0x3166ce2f5f03be0beff76c614862a681886c1acca4ecda9961ab47e9987655f2", //Civil
+  "0xc7b1d7fdac8db0aad96b1ad1fee2b2635306e9360fec7bbdcd59c79a83ce3b66" //Architecture
 ];
 
 task("accounts", "Prints the list of accounts", async (args, hre): Promise<void> => {

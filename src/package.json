@@ -31,8 +31,15 @@
     "console": "npx hardhat console",
     "pretest": "yarn compile",
     "test": "npx hardhat test",
+  
+    
     "main": "npx hardhat run main/Main.ts --network local",
+    "title": "npx hardhat run main/Title.ts --network local",
+    "degrees": "npx hardhat run main/Degrees.ts --network local",
+    "institutions": "npx hardhat run main/Institutions.ts --network local",
     "main_ac": "npx hardhat run main/Main_AC.ts --network local",
+  
+
     "deploy": "npx hardhat run scripts/deploy.ts --network local",
     "erc20": "npx hardhat run scripts/erc20.ts",
     "nft": "npx hardhat run scripts/nft.ts --network mainnet",

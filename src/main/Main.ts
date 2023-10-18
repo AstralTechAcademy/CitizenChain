@@ -9,34 +9,50 @@ import {testAccounts} from "../hardhat.config";
 //Referencias: 
 //https://docs.openzeppelin.com/learn/deploying-and-interacting
 
-
 const main = async(): Promise<any> => {
+/***********************************
+ * Create test addresses           *
+ **********************************/
 
-    /* Load test addresses
-    var mnemonic = "float injury estate symbol canal pudding wonder manual castle ten input final exit hammer tattoo shoulder symbol video describe fresh asset tribe convince black"
-    var admin = ethers.Wallet.fromMnemonic(mnemonic)
+  // Institutions
+  var mnemonic = "sausage shadow board sell skill year radio ill fun grunt select sample invite setup level stick lumber worth creek amount example federal mask until"
+  var upm = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "green broccoli net drama harsh enemy luggage system market sting identify profit love base write feature symptom balance favorite portion tourist sheriff element broccoli"
+  var uoc = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "hospital tower champion spoon dumb enforce lake assist hole zoo survey inch cloth clarify sting lift arrow eight cage expose worth install whisper bonus"
+  var uam = ethers.Wallet.fromMnemonic(mnemonic)
 
-    mnemonic = "good glare clinic penalty domain pilot sport captain elbow tent fame top meadow manage purse weather trend physical usage found grain veteran sorry frozen"
-    const citizen = ethers.Wallet.fromMnemonic(mnemonic)
+  // Titles
+  mnemonic = "derive slender board column nest forward tennis wool collect debate thrive copper theory color sun glimpse body weasel unit light furnace climb glory crash"
+  var telecomunication = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "render amateur narrow bench raven put when bless scrap mesh blade drama pattern foster lunar gaze child valley pave skin fun slim inhale junk"
+  var computerScience = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "lawsuit minor mother rebuild stereo topic text stick vibrant couch learn assume law cute jazz apple poverty deputy gap fantasy day lend man symptom"
+  var aerospacial = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "young come giggle essay document favorite top apart because load result lawn betray frame tool grain beyond fabric fiction spring walnut number pyramid mirror"
+  var civil = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "tissue weapon twist domain taste female depart forest uncle fringe retreat broccoli mobile reopen feed enforce vivid drill current lock desk abandon gossip until"
+  var architecture = ethers.Wallet.fromMnemonic(mnemonic)
 
-    console.log("Signer Pub key: " + admin.address )
-    console.log("Signer Priv key: " + admin.privateKey )
-    console.log("Citizen1 Pub key: " + citizen1.address )
-    console.log("Citizen1 Priv key: " + citizen1.privateKey )*/
+  console.log("---------------------------------------------------")
+  console.log("- Claves privadas de las instituciones y escuelas -")
+  console.log("---------------------------------------------------\n")
+  console.log(" UPM: " + upm.privateKey)
+  console.log(" UOC: " + uoc.privateKey)
+  console.log(" UAM: " + uam.privateKey)
+  console.log("\n")
+  console.log(" Teleco: " + telecomunication.privateKey)
+  console.log(" Computer science: " + computerScience.privateKey)
+  console.log(" Aerospacial: " + aerospacial.privateKey)
+  console.log(" Civil: " + civil.privateKey)
+  console.log(" Architecture: " + architecture.privateKey)
+  console.log("\n---------------------------------------------------")
 
+  const [admin] = await ethers.getSigners();
 
-    // Load hardhat.config.ts addresses
-    const [admin, citizen1] = await ethers.getSigners();
+  console.log(await ethers.provider.getBalance(admin.address));
+  console.log(await ethers.provider.getBalance(upm.address));
 
-    // Load contract already deployed in the subnet
-    const address = '0x768AF58E63775354938e9F3FEdB764F601c038b4'; // Deployed contract address
-    var stFactory = await ethers.getContractFactory('TitleRegistry'); // Interface
-    stFactory = stFactory.connect(admin); // change the user who sign the transactionn
-    const sc = await stFactory.attach(address);
-    
-    // Use the contract loaded
-    await sc.register(34);
-    console.log(await sc.retrieve());
 }
 
 main()
