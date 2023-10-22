@@ -20,11 +20,26 @@ const main = async(): Promise<any> => {
     stFactory = stFactory.connect(upm); // change the user who sign the transactionn
     const sc = await stFactory.attach(smartContracts.TITLE);
 
-    await sc.emitTitle(536, upm.address, telecomunication.address, citizen1.address, 2019);
+    try
+    {
+      await sc.emitTitle(536, upm.address, telecomunication.address, citizen1.address, 2019);
+    } 
+    catch
+    {
+      console.log("Title already exist");
+    }
 
     await new Promise(f => setTimeout(f, 2000));
     
+    console.log(await sc.count1());
     console.log(await sc.getTitle(536));
+    console.log(await sc.getTitlesByStudent(citizen1.address));
+    await sc.cancelTitle(536);
+    var titles = await sc.getTitlesByStudent(citizen1.address);
+    for (var title of titles) {
+      console.log(await sc.getTitle(title));
+    }
+
 }
 
 main()

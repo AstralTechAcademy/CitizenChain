@@ -15,14 +15,19 @@ const main = async(): Promise<any> => {
     // Load hardhat.config.ts addresses
     const [admin, citizen1, upm, uoc, uam, telecomunication, computerScience, architecture] = await ethers.getSigners();
 
-    // Load contract already deployed in the subnet
+        // Load contract already deployed in the subnet
     var stFactory = await ethers.getContractFactory('Degrees'); // Interface
     stFactory = stFactory.connect(admin); // change the user who sign the transactionn
     const sc = await stFactory.attach(smartContracts.DEGREES);
+    
+    // Use the contract loaded
+    await sc.addDegree(telecomunication.address, "Univesidad Politécnica de Madrid");
+    await sc.addDegree(computerScience.address, "Univesidad Oberta de Cataluña");
+    await sc.addDegree(architecture.address, "Univesidad Autónoma de Madrid");
+
+    await new Promise(f => setTimeout(f, 2000));
   
-    await sc.addDegree(telecomunication.address, upm.address, "Grado en Ingeniería de Telecomunicaciones");
-    await sc.addDegree(computerScience.address, upm.address, "Grado en Ingeniería Informática");
-    await sc.addDegree(architecture.address, uam.address, "Grado en Arquitectura");
+    console.log(await sc.count());
 
 }
 

@@ -5,8 +5,9 @@ pragma experimental ABIEncoderV2;
 import "./EducationAC.sol";
 import "./Institutions.sol";
 import "./Title.sol";
+import "./Degrees.sol";
 
-contract Education is TitleRegistry, Institutions {
+contract Education is TitleRegistry, Institutions, Degrees {
 
   address private owner_;
 

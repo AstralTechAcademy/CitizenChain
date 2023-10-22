@@ -12,48 +12,51 @@ struct Title { // Struct
   address student_;
 
   uint16 year_;
-}
 
-struct Degree {
-  address id;
-  address institution_;
-
-  string name_;
+  string state_;
 }
 
 contract TitleRegistry is EducationAC {
 
   address private owner_;  
   mapping(uint => Title) titles_;
-  mapping(address => Degree) degrees_;
+  mapping(uint => bool) exist1_;
+  mapping(address => uint[]) students_;
+  uint count1_;
 
   constructor() public {
     owner_ = msg.sender;
   }
 
-  modifier isDegreeOwner(address degree)
+  modifier notExist1(uint id)
   {
-      require(msg.sender == degrees_[degree].institution_,
-        "The sender is not a valid institution for this degree"
-      );
-      _;
+    require(exist1_[id] == false, "Degree already added");
+    _;
   }
 
-  function addDegree(address id, address institution, string memory name) external {
-    degrees_[id] = Degree(id, institution, name);
-  }
-
-  function getDegree(address id) external view returns (string memory) {
-    return degrees_[id].name_;
-  }
-
-  function emitTitle(uint id, address institution, address degree, address student, uint16 year) external isDegreeOwner(degree) {
-    titles_[id] = Title(1, institution, degree, student, year);
+  function emitTitle(uint id, address institution, address degree, address student, uint16 year) external notExist1(id) {
+    titles_[id] = Title(id, institution, degree, student, year, "Active");
+    students_[student].push(id);
+    exist1_[id] = true;
+    count1_++;
   }
 
   function getTitle(uint id) external view returns (Title memory) {
     return titles_[id];
   }
+
+  function getTitlesByStudent(address id) external view returns (uint[] memory) {
+    return students_[id];
+  }
+
+  function cancelTitle(uint id) external {
+    Title storage title = titles_[id];
+    title.state_ = "Inactive";
+  }
+
+  function count1() external view returns (uint) {
+    return count1_;
+  } 
 
   function owner1() external view returns (address) {
     return owner_;

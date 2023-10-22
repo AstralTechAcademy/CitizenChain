@@ -48,12 +48,6 @@ const main = async(): Promise<any> => {
   console.log(" Architecture: " + architecture.privateKey)
   console.log("\n---------------------------------------------------")
 
-  const [admin] = await ethers.getSigners();
-
-  console.log(await ethers.provider.getBalance(admin.address));
-  console.log(await ethers.provider.getBalance(upm.address));
-
-
   // Transfer funds
   const tx = {
     to: upm.address,
@@ -62,14 +56,35 @@ const main = async(): Promise<any> => {
     gasPrice: "0x5D21DBA00",
     chainId: 4543,
   }
+
+  const tx1 = {
+    to: uoc.address,
+    value: ethers.utils.parseEther("20000"),
+    gasLimit: 21000,
+    gasPrice: "0x5D21DBA00",
+    chainId: 4543,
+  }
+
+  const tx2 = {
+    to: uam.address,
+    value: ethers.utils.parseEther("20000"),
+    gasLimit: 21000,
+    gasPrice: "0x5D21DBA00",
+    chainId: 4543,
+  }
+
+  const [admin] = await ethers.getSigners();
   
   await admin.sendTransaction(tx);
+  await admin.sendTransaction(tx1);
+  await admin.sendTransaction(tx2);
 
   await new Promise(f => setTimeout(f, 2000));
 
   console.log(await ethers.provider.getBalance(admin.address));
   console.log(await ethers.provider.getBalance(upm.address));
-  
+  console.log(await ethers.provider.getBalance(uoc.address));
+  console.log(await ethers.provider.getBalance(uam.address));
 
 }
 

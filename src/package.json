@@ -34,7 +34,7 @@
   
     
     "main": "npx hardhat run main/Main.ts --network local",
-    "title": "npx hardhat run main/Title.ts --network local",
+    "titles": "npx hardhat run main/Title.ts --network local",
     "degrees": "npx hardhat run main/Degrees.ts --network local",
     "institutions": "npx hardhat run main/Institutions.ts --network local",
     "main_ac": "npx hardhat run main/Main_AC.ts --network local",
