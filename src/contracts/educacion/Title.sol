@@ -22,6 +22,7 @@ contract TitleRegistry is EducationAC {
   mapping(uint => Title) titles_;
   mapping(uint => bool) exist1_;
   mapping(address => uint[]) students_;
+  mapping(address => uint[]) inst2titles_;
   uint count1_;
 
   constructor() public {
@@ -37,6 +38,7 @@ contract TitleRegistry is EducationAC {
   function emitTitle(uint id, address institution, address degree, address student, uint16 year) external notExist1(id) {
     titles_[id] = Title(id, institution, degree, student, year, "Active");
     students_[student].push(id);
+    inst2titles_[institution].push(id);
     exist1_[id] = true;
     count1_++;
   }
@@ -47,6 +49,10 @@ contract TitleRegistry is EducationAC {
 
   function getTitlesByStudent(address id) external view returns (uint[] memory) {
     return students_[id];
+  }
+
+  function getTitlesByInstitution(address id) external view returns (uint[] memory) {
+    return inst2titles_[id];
   }
 
   function cancelTitle(uint id) external {
