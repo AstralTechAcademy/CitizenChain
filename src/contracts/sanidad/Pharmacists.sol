@@ -6,8 +6,8 @@ import "../common/StorageBasic.sol";
 
 enum ePharmacistState 
 {
-    ACTIVE,
-    INACTIVE
+    INACTIVE,
+    ACTIVE
 }
 
 struct tPharmacist

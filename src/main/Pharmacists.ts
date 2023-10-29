@@ -23,7 +23,7 @@ const main = async(): Promise<any> => {
     // Use the contract loaded
     try
     {
-      await sc.addPharmacist(pharmacist1.address, 83953, 0);
+      await sc.addPharmacist(pharmacist1.address, 83953, 1);
     }
     catch
     {

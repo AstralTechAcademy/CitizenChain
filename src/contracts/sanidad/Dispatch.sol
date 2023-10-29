@@ -18,7 +18,7 @@ struct tDispatch
 contract Dispatch
 {
     address private owner_;  
-    mapping(uint => tDispatch) dispatches_;
+    mapping(uint => tDispatch[]) dispatches_;
 
     SpanishDNS private dns = SpanishDNS(0xa1E47689f396fED7d18D797d9D31D727d2c0d483);
     Prescription private pres;
@@ -45,12 +45,12 @@ contract Dispatch
     }
 
     function dispatch(uint prescriptionID, address pharmacist,
-                    uint day, uint month, uint year) external notExpired(prescriptionID) isActive()
+                    uint day, uint month, uint year) external
     {
-        dispatches_[prescriptionID] = tDispatch(prescriptionID, day, month, year, pharmacist);
+        dispatches_[prescriptionID].push(tDispatch(prescriptionID, day, month, year, pharmacist));
     }
 
-    function getDispatches(uint prescriptionID) external view returns (tDispatch memory)
+    function getDispatches(uint prescriptionID) external view returns (tDispatch[] memory)
     {
         return dispatches_[prescriptionID];
     }
