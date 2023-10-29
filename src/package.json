@@ -38,7 +38,11 @@
     "degrees": "npx hardhat run main/Degrees.ts --network local",
     "institutions": "npx hardhat run main/Institutions.ts --network local",
     "main_ac": "npx hardhat run main/Main_AC.ts --network local",
-  
+    "dns": "npx hardhat run main/Dns.ts --network local",
+    "doctors": "npx hardhat run main/Doctors.ts --network local",
+    "pharmacists": "npx hardhat run main/Pharmacists.ts --network local",
+    "healthsystem": "npx hardhat run main/HealthSystem.ts --network local",
+
 
     "deploy": "npx hardhat run scripts/deploy.ts --network local",
     "erc20": "npx hardhat run scripts/erc20.ts",

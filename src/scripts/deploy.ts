@@ -8,32 +8,29 @@ const main = async(): Promise<any> => {
 
   const [admin, citizen1] = await ethers.getSigners();
 
-  // --------------------
-  var StorageSC  = await ethers.getContractFactory("AccessControl")
+  // --------------------------------
+  var StorageSC = await ethers.getContractFactory("SpanishDNS")
   StorageSC = StorageSC.connect(admin);
 
-  var storage: Contract = await StorageSC.deploy();
+  var spanishSC = await StorageSC.deploy();
+  
+  await spanishSC.deployed()
+  console.log(`SpanishDNS deployed to: ${spanishSC.address}`)
+  
+  
+  // -------------------------------
+  let contracts = ["AccessControl", "TitleRegistry", "Education", "Doctor", "Prescription", "Pharmacist", "Dispatch", "HealthSystem"];
 
-  await storage.deployed()
-  console.log(`Smart contract deployed to: ${storage.address}`)
-
-  // --------------------
-  StorageSC  = await ethers.getContractFactory("TitleRegistry")
-  StorageSC = StorageSC.connect(admin);
-
-  storage = await StorageSC.deploy();
-
-  await storage.deployed()
-  console.log(`Smart contract deployed to: ${storage.address}`)
-
-  // --------------------
-  StorageSC  = await ethers.getContractFactory("Education")
-  StorageSC = StorageSC.connect(admin);
-
-  storage = await StorageSC.deploy();
-
-  await storage.deployed()
-  console.log(`Smart contract deployed to: ${storage.address}`)
+  for(var name of contracts)
+  {
+    StorageSC  = await ethers.getContractFactory(name)
+    StorageSC = StorageSC.connect(admin);
+  
+    var storage = await StorageSC.deploy();
+  
+    await storage.deployed()
+    console.log(`${name} deployed to: ${storage.address}`)
+  }
 
 }
 

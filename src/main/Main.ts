@@ -22,7 +22,7 @@ const main = async(): Promise<any> => {
   mnemonic = "hospital tower champion spoon dumb enforce lake assist hole zoo survey inch cloth clarify sting lift arrow eight cage expose worth install whisper bonus"
   var uam = ethers.Wallet.fromMnemonic(mnemonic)
 
-  // Titles
+  // Degrees
   mnemonic = "derive slender board column nest forward tennis wool collect debate thrive copper theory color sun glimpse body weasel unit light furnace climb glory crash"
   var telecomunication = ethers.Wallet.fromMnemonic(mnemonic)
   mnemonic = "render amateur narrow bench raven put when bless scrap mesh blade drama pattern foster lunar gaze child valley pave skin fun slim inhale junk"
@@ -33,6 +33,15 @@ const main = async(): Promise<any> => {
   var civil = ethers.Wallet.fromMnemonic(mnemonic)
   mnemonic = "tissue weapon twist domain taste female depart forest uncle fringe retreat broccoli mobile reopen feed enforce vivid drill current lock desk abandon gossip until"
   var architecture = ethers.Wallet.fromMnemonic(mnemonic)
+
+  // People
+  mnemonic = "half flash equip rifle city print shoulder all chest song doctor rail pledge live until noise feature alcohol actress spell spoon expand town tonight"
+  var doctor1 = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "govern miracle grief history warrior almost material brain stumble trash measure follow love blast title long obscure atom despair history rotate cannon only snack"
+  var pharmacist1 = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "decorate vicious fire misery width toddler midnight table usual knock convince tragic identify leave matrix claw horn vendor april monitor spin soul engage salt"
+  var patient1 = ethers.Wallet.fromMnemonic(mnemonic)
+
 
   console.log("---------------------------------------------------")
   console.log("- Claves privadas de las instituciones y escuelas -")
@@ -46,6 +55,14 @@ const main = async(): Promise<any> => {
   console.log(" Aerospacial: " + aerospacial.privateKey)
   console.log(" Civil: " + civil.privateKey)
   console.log(" Architecture: " + architecture.privateKey)
+  console.log("\n---------------------------------------------------")
+
+  console.log("---------------------------------------------------")
+  console.log("- Claves privadas de personas -")
+  console.log("---------------------------------------------------\n")
+  console.log(" Doctor1: " + doctor1.privateKey)
+  console.log(" Pharmacist1: " + pharmacist1.privateKey)
+  console.log(" Patient1 : " + patient1.privateKey)
   console.log("\n---------------------------------------------------")
 
   // Transfer funds
@@ -73,11 +90,29 @@ const main = async(): Promise<any> => {
     chainId: 4543,
   }
 
+  const tx3 = {
+    to: doctor1.address,
+    value: ethers.utils.parseEther("20000"),
+    gasLimit: 21000,
+    gasPrice: "0x5D21DBA00",
+    chainId: 4543,
+  }
+
+  const tx4 = {
+    to: pharmacist1.address,
+    value: ethers.utils.parseEther("20000"),
+    gasLimit: 21000,
+    gasPrice: "0x5D21DBA00",
+    chainId: 4543,
+  }
+
   const [admin] = await ethers.getSigners();
   
   await admin.sendTransaction(tx);
   await admin.sendTransaction(tx1);
   await admin.sendTransaction(tx2);
+  await admin.sendTransaction(tx3);
+  await admin.sendTransaction(tx4);
 
   await new Promise(f => setTimeout(f, 2000));
 
@@ -85,6 +120,8 @@ const main = async(): Promise<any> => {
   console.log(await ethers.provider.getBalance(upm.address));
   console.log(await ethers.provider.getBalance(uoc.address));
   console.log(await ethers.provider.getBalance(uam.address));
+  console.log(await ethers.provider.getBalance(doctor1.address));
+  console.log(await ethers.provider.getBalance(pharmacist1.address));
 
 }
 

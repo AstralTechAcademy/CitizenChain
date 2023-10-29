@@ -28,7 +28,11 @@ export const testAccounts = [
   "0x4ef5417edc71502a3b9bafe3d55f7a4331e471d4bcf4bf39d1e9b63f77802b17", //Computer science
   "0xd26470431709d34e25820e45e3c679edbc9e642484347674aa3c78a004e6a4d9", //Aerospacial
   "0x3166ce2f5f03be0beff76c614862a681886c1acca4ecda9961ab47e9987655f2", //Civil
-  "0xc7b1d7fdac8db0aad96b1ad1fee2b2635306e9360fec7bbdcd59c79a83ce3b66" //Architecture
+  "0xc7b1d7fdac8db0aad96b1ad1fee2b2635306e9360fec7bbdcd59c79a83ce3b66", //Architecture
+
+  "0x1bc06678006b33cf10d7f4a1631a0e03dd7f05e5c1348f884bb0b3af8f3b70c4", // Doctor1
+  "0xe8f87a1b739da2e11b02423375193eca2f138d82a931f853304deb181017d0e4", // Pharmacist1
+  "0xcad40a4fef10d0dd49ebb54cf25efa2938832918fbef9aea018a80d302814fdf" // Patient1
 ];
 
 task("accounts", "Prints the list of accounts", async (args, hre): Promise<void> => {

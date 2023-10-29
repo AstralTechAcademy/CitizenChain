@@ -2,6 +2,7 @@
 pragma solidity >=0.6.0 <0.8.0;
 pragma experimental ABIEncoderV2;
 
+
 struct Item
 {
     uint id_;
@@ -15,14 +16,6 @@ struct Item
     uint year_;
 
     bool expired_;
-
-
-    uint dayDispatched_;
-    uint monthDispatched_;
-    uint yearDispatched_;
-    address pharmacist_;
-
-    bool dispatched_;
 }
 
 contract Prescription
@@ -36,23 +29,19 @@ contract Prescription
         owner_ = msg.sender;
     }
 
+
+
     function prescribe(uint id,
                     address patient, address doctor, 
                     uint medicine, uint day, uint month, uint year) external
     {
-        records_[id] = Item(id, patient, doctor, medicine, day, month, year, false, 0, 0, 0, address(0), false);
+        records_[id] = Item(id, patient, doctor, medicine, day, month, year, false);
         patient2Records_[patient].push(id);
     }
 
-    function dispatch(uint id, address patient, address pharmacist,
-                    uint day, uint month, uint year) external
+    function isExpired(uint id) external view returns (bool)
     {
-        Item storage record = records_[id];
-        record.pharmacist_ = pharmacist;
-        record.dayDispatched_ = day;
-        record.monthDispatched_ = month;
-        record.yearDispatched_ = year;
-        record.dispatched_ = true;
+        return records_[id].expired_;
     }
 
     function getRecord(uint id) external view returns (Item memory)
