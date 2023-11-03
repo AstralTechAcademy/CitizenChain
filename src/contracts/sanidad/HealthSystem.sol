@@ -5,12 +5,12 @@ pragma experimental ABIEncoderV2;
 import "./Prescription.sol";
 import "./Doctors.sol";
 import "./Dispatch.sol";
-import "../common/SpanishDNS.sol";
+import "../common/Dns.sol";
 
 contract HealthSystem
 {
     address private owner_;
-    SpanishDNS dns = SpanishDNS(0x5dC0d3A9B168034f7aE890Bcce125DdEBF936987);
+    Dns dns = Dns(0x5dC0d3A9B168034f7aE890Bcce125DdEBF936987);
     mapping(string => address) private contracts_;
     constructor() public
     {

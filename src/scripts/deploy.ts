@@ -20,13 +20,13 @@ const main = async(): Promise<any> => {
   const [admin, citizen1] = await ethers.getSigners();
 
   // --------------------------------
-  var StorageSC = await ethers.getContractFactory("SpanishDNS")
+  var StorageSC = await ethers.getContractFactory("Dns")
   StorageSC = StorageSC.connect(admin);
 
   var spanishSC = await StorageSC.deploy();
   
   await spanishSC.deployed()
-  console.log(`SpanishDNS deployed to: ${spanishSC.address}`)
+  console.log(`Dns deployed to: ${spanishSC.address}`)
 
   StorageSC = await ethers.getContractFactory("AccessControl")
   StorageSC = StorageSC.connect(admin);

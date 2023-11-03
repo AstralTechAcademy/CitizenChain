@@ -16,7 +16,7 @@ const main = async(): Promise<any> => {
     const [admin] = await ethers.getSigners();
 
     // Load contract already deployed in the subnet
-    var stFactory = await ethers.getContractFactory('SpanishDNS'); // Interface
+    var stFactory = await ethers.getContractFactory('Dns'); // Interface
     stFactory = stFactory.connect(admin); // change the user who sign the transactionn
     const sc = await stFactory.attach(smartContracts.DNS);
 

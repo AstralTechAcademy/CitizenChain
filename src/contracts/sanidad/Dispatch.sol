@@ -2,7 +2,7 @@
 pragma solidity >=0.6.0 <0.8.0;
 pragma experimental ABIEncoderV2;
 
-import "../common/SpanishDNS.sol";
+import "../common/Dns.sol";
 import "./Prescription.sol";
 import "./Pharmacists.sol";
 

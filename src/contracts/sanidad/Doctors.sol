@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import "../common/StorageBasic.sol";
 import "../common/AccessControl.sol";
-import "../common/SpanishDNS.sol";
+import "../common/Dns.sol";
 
 enum eDoctorState 
 {
@@ -25,7 +25,7 @@ struct tDoctor
 contract Doctor is StorageBasic
 {
     address private owner_;
-    SpanishDNS dns = SpanishDNS(0xa4DfF80B4a1D748BF28BC4A271eD834689Ea3407);
+    Dns dns = Dns(0xa4DfF80B4a1D748BF28BC4A271eD834689Ea3407);
     mapping(address => tDoctor) private doctors_;
 
     constructor() public

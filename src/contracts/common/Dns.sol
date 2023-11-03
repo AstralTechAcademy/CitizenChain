@@ -1,6 +1,6 @@
 pragma solidity >=0.6.0 <0.8.0;
 
-contract SpanishDNS {
+contract Dns {
 
     mapping(string => address) records;
     mapping(string => bool) exist_;
