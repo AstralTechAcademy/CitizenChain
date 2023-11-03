@@ -6,26 +6,37 @@ const { ethers } = require('hardhat');
 const Web3 = require('web3');
 import {testAccounts} from "../hardhat.config";
 const readLineSync = require('readline-sync')
+import {eRole, smartContracts} from "./Constants";
 
 //Referencias: 
 //https://docs.openzeppelin.com/learn/deploying-and-interacting
 
 
-const listInstitution = async(sc: any) => {
-  var userRes = readLineSync.question("Pick the index: ");
+const listUser = async(sc: any) => {
+  var userRes = readLineSync.question("Pick the address of the user: ");
 
-  console.log(await sc.getInstitution(userRes));
+  console.log(await sc.get(userRes));
 }
 
-const addInstitution = async(sc: any) => {
-  var userRes = readLineSync.question("Pick the public address of the institution: ");
+const addUser = async(sc: any) => {
+  var userRes = readLineSync.question("Pick the public address of the user: ");
 
-  await sc.addAcademicInstitution(userRes);
+  await sc.assign("doctor.admin", userRes);
+
+}
+
+const createRole = async(sc: any) => {
+  var roleName = readLineSync.question("Pick the role name: ");
+
+  await sc.createRole(roleName);
+
 }
 
 
 
 const main = async(): Promise<any> => {
+
+
 
     /* Load test addresses
     var mnemonic = "float injury estate symbol canal pudding wonder manual castle ten input final exit hammer tattoo shoulder symbol video describe fresh asset tribe convince black"
@@ -40,27 +51,43 @@ const main = async(): Promise<any> => {
     console.log("Citizen1 Priv key: " + citizen1.privateKey )*/
 
     // Load hardhat.config.ts addresses
-    const [admin, citizen1] = await ethers.getSigners();
+    const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
 
 
     // Load contract already deployed in the subnet
-    const address = '0xa1E47689f396fED7d18D797d9D31D727d2c0d483'; // Deployed contract address
     var stFactory = await ethers.getContractFactory('AccessControl'); // Interface
     stFactory = stFactory.connect(admin); // change the user who sign the transactionn
-    const sc = await stFactory.attach(address);
+    const sc = await stFactory.attach(smartContracts.ACCESS_CONTROL);
+
+    sc.on("assigned", (timestamp:string, addr:string) => {
+      console.log("[" + timestamp + "] User " + addr + " added in access control");
+    })
 
     let userRes;
     while (userRes !== '0') {
         console.log("");
-        console.log("1. List institution")
-        console.log("2. Add institution")
+        console.log("1. List users by role")
+        console.log("2. Assign user to role")
+        console.log("3. Count roles")
+        console.log("4. Create roles")
         userRes = readLineSync.question("Pick an option: ");
         if (userRes === '1') {
-          await listInstitution(sc);
+          await listUser(sc);
         } else if (userRes === '2') {
           console.log("Admin public address: " + admin.address)
           console.log("Citizen1 public address: " + citizen1.address)
-          await addInstitution(sc);
+          console.log("Doctor public address: " + doctor1.address)
+          console.log("Healt Ministry public address: " + healtMinistry.address)
+
+          await addUser(sc);
+        } 
+        else if(userRes == '3')
+        {
+          console.log(await sc.count());
+        }
+        else if(userRes == '4')
+        {
+          await createRole(sc)
         }
     }
 

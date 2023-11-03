@@ -4,6 +4,17 @@ import {
 } from "ethers"
 import { ethers } from "hardhat"
 
+const HEALTH_ADMIN_ROLE = 6000;
+const EDUCATION_ADMIN_ROLE = 6001;
+
+enum eRole
+{
+    NONE,
+    VIEWER,
+    WRITER,
+    ADMIN
+}
+
 const main = async(): Promise<any> => {
 
   const [admin, citizen1] = await ethers.getSigners();
@@ -16,10 +27,18 @@ const main = async(): Promise<any> => {
   
   await spanishSC.deployed()
   console.log(`SpanishDNS deployed to: ${spanishSC.address}`)
+
+  StorageSC = await ethers.getContractFactory("AccessControl")
+  StorageSC = StorageSC.connect(admin);
+
+  var accessControlSC = await StorageSC.deploy();
+  
+  await accessControlSC.deployed()
+  console.log(`Access Control deployed to: ${accessControlSC.address}`)
   
   
   // -------------------------------
-  let contracts = ["AccessControl", "TitleRegistry", "Education", "Doctor", "Prescription", "Pharmacist", "Dispatch", "HealthSystem"];
+  let contracts = ["TitleRegistry", "Education", "Doctor", "Prescription", "Pharmacist", "Dispatch", "HealthSystem"];
 
   for(var name of contracts)
   {
@@ -30,6 +49,14 @@ const main = async(): Promise<any> => {
   
     await storage.deployed()
     console.log(`${name} deployed to: ${storage.address}`)
+
+    if(name == "HealthSystem")
+    {
+      var stFactory = await ethers.getContractFactory('AccessControl'); // Interface
+      stFactory = stFactory.connect(admin); // change the user who sign the transactionn
+      let sc = await stFactory.attach(accessControlSC.address);
+      sc.assign(6000, storage.address);
+    }
   }
 
 }

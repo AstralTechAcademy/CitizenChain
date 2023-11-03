@@ -13,23 +13,18 @@ import { smartContracts } from "./Constants";
 const main = async(): Promise<any> => {
 
     // Load hardhat.config.ts addresses
-    const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1] = await ethers.getSigners();
+    const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
 
     // Load contract already deployed in the subnet
     var stFactory = await ethers.getContractFactory('Doctor'); // Interface
-    stFactory = stFactory.connect(admin); // change the user who sign the transactionn
+    stFactory = stFactory.connect(healtMinistry); // change the user who sign the transactionn
     const sc = await stFactory.attach(smartContracts.DOCTORS);
+
+    sc.on("denied", (sender:string) => {console.log("Denied action for " + sender);})
     
     // Use the contract loaded
-    try
-    {
-      await sc.addDoctor(doctor1.address, "Medicina de familia", 83953, 1);
-    }
-    catch
-    {
-      console.log("The doctor exist")
-    }
 
+    await sc.addDoctor(doctor1.address, "Medicina de familia", 83953, 1);
     await new Promise(f => setTimeout(f, 2000));
 
     console.log(await sc.count());

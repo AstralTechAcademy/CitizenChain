@@ -13,8 +13,13 @@ contract SpanishDNS {
         _;
     }
 
+    modifier exist(string memory name)
+    {
+        require(exist_[name] == true, "Contract not added in DNS");
+        _;
+    }
 
-    function getAddress(string memory name) public returns(address)
+    function getAddress(string memory name) public exist(name) returns(address)
     {
         return records[name];
     }
@@ -24,6 +29,11 @@ contract SpanishDNS {
         records[name] = id;
         exist_[name] = true;
         count_++;
+    }
+
+    function updateRegistry(string memory name, address id) external exist(name)
+    {
+        records[name] = id;
     }
 
     function count() external view returns (uint) {

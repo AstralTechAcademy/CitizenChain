@@ -22,6 +22,7 @@ const main = async(): Promise<any> => {
 
     try
     {
+      await sc.addRegistry("AC", smartContracts.ACCESS_CONTROL);
       await sc.addRegistry("Doctors", smartContracts.DOCTORS);
       await sc.addRegistry("Pharmacist", smartContracts.PHARMACIST);
       await sc.addRegistry("Prescription", smartContracts.PRESCRIPTION);
@@ -35,7 +36,7 @@ const main = async(): Promise<any> => {
     await new Promise(f => setTimeout(f, 2000));
 
     console.log(await sc.count());
-    //console.log(await sc.getAddress("Doctors"));
+    console.log(await sc.getAddress("AC"));
     //console.log(await sc.getAddress("Pharmacist"));
 
 }

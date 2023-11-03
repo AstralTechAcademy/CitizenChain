@@ -27,4 +27,8 @@ contract StorageBasic
     function count() external view returns (uint) {
         return count_;
     } 
+
+    function size() public view returns (uint) {
+        return count_;
+    } 
 }

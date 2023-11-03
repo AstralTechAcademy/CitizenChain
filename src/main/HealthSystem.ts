@@ -44,6 +44,8 @@ const main = async(): Promise<any> => {
     {
       console.log(await sc.getPrescription(prescription.toNumber()));
     }
+
+    console.log(await sc.getBlockNumber());
   
     console.log("---------------------------------------------------")
     console.log("-                  Dispatch                       -")

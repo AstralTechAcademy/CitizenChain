@@ -38,4 +38,9 @@ contract Pharmacist is StorageBasic
     {
         return pharmacists_[id].status == ePharmacistState.ACTIVE;
     }
+
+    function changeState(address id, ePharmacistState state) external exist(id)
+    {
+        pharmacists_[id].status = state;
+    }
 }

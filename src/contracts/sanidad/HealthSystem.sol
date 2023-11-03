@@ -15,11 +15,10 @@ contract HealthSystem
     constructor() public
     {
         owner_ = msg.sender;
-        contracts_["Doctors"] = 0x4Ac1d98D9cEF99EC6546dEd4Bd550b0b287aaD6D;
-        contracts_["Dispatch"] = 0x5dC0d3A9B168034f7aE890Bcce125DdEBF936987;
-        contracts_["Prescription"] = 0xB5f5A23BBD1Bee9ed105aBA8aC9eCd19f50bB378;
-        contracts_["Pharmacist"] = 0xEe40DFF876204A99eCCB783FDc01eE0a2678Ae93;
-
+        contracts_["Doctors"] = 0xf1db872E6454D553686b088c1Ea3889cF2FE3ABe;
+        contracts_["Dispatch"] = 0x9c4cD519100100ec3B3c7bff3Df7f52b575F5558;
+        contracts_["Prescription"] = 0x224A8113006f2c986217A832e364D676C19C7c21;
+        contracts_["Pharmacist"] = 0x20BC04ad10B6300F542e694f8c3aB44DB8Caac65;
     }
 
     modifier isDoctorActive()
@@ -71,5 +70,10 @@ contract HealthSystem
     function getDispatches(uint prescriptionID) external view returns (tDispatch[] memory)
     {
         return Dispatch(contracts_["Dispatch"]).getDispatches(prescriptionID);
+    }
+
+    function getBlockNumber() external view returns (uint)
+    {
+        return block.number;
     }
 }

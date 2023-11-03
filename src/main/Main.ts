@@ -41,7 +41,8 @@ const main = async(): Promise<any> => {
   var pharmacist1 = ethers.Wallet.fromMnemonic(mnemonic)
   mnemonic = "decorate vicious fire misery width toddler midnight table usual knock convince tragic identify leave matrix claw horn vendor april monitor spin soul engage salt"
   var patient1 = ethers.Wallet.fromMnemonic(mnemonic)
-
+  mnemonic = "prevent impose hero skill gold index animal hotel sugar jump shove sun inflict gold promote flower theory uphold unknown gaze sword asset disagree teach"
+  var healtMinistry = ethers.Wallet.fromMnemonic(mnemonic)
 
   console.log("---------------------------------------------------")
   console.log("- Claves privadas de las instituciones y escuelas -")
@@ -63,6 +64,7 @@ const main = async(): Promise<any> => {
   console.log(" Doctor1: " + doctor1.privateKey)
   console.log(" Pharmacist1: " + pharmacist1.privateKey)
   console.log(" Patient1 : " + patient1.privateKey)
+  console.log(" HealtMinistry : " + healtMinistry.privateKey)
   console.log("\n---------------------------------------------------")
 
   // Transfer funds
@@ -106,6 +108,14 @@ const main = async(): Promise<any> => {
     chainId: 4543,
   }
 
+  const tx5 = {
+    to: healtMinistry.address,
+    value: ethers.utils.parseEther("20000"),
+    gasLimit: 21000,
+    gasPrice: "0x5D21DBA00",
+    chainId: 4543,
+  }
+
   const [admin] = await ethers.getSigners();
   
   await admin.sendTransaction(tx);
@@ -113,6 +123,8 @@ const main = async(): Promise<any> => {
   await admin.sendTransaction(tx2);
   await admin.sendTransaction(tx3);
   await admin.sendTransaction(tx4);
+  await admin.sendTransaction(tx5);
+
 
   await new Promise(f => setTimeout(f, 2000));
 
@@ -122,6 +134,7 @@ const main = async(): Promise<any> => {
   console.log(await ethers.provider.getBalance(uam.address));
   console.log(await ethers.provider.getBalance(doctor1.address));
   console.log(await ethers.provider.getBalance(pharmacist1.address));
+  console.log(await ethers.provider.getBalance(healtMinistry.address));
 
 }
 

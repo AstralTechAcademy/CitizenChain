@@ -27,7 +27,7 @@ struct Person { // Struct
   uint8 day;
 }
 
-contract CivilRegistry is SpanishContract {
+contract CivilRegistry {
 
   address private owner_;
   uint256 number = 15;
@@ -36,10 +36,4 @@ contract CivilRegistry is SpanishContract {
     owner_ = msg.sender;
   }
 
-  modifier isCivilRegistry() {
-    require(ac.isCivilRegistry(msg.sender),
-      "Caller is not a civil registry"
-    );
-    _;
-  }
 }

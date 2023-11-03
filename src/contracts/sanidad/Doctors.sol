@@ -3,6 +3,8 @@ pragma solidity >=0.6.0 <0.8.0;
 pragma experimental ABIEncoderV2;
 
 import "../common/StorageBasic.sol";
+import "../common/AccessControl.sol";
+import "../common/SpanishDNS.sol";
 
 enum eDoctorState 
 {
@@ -23,6 +25,7 @@ struct tDoctor
 contract Doctor is StorageBasic
 {
     address private owner_;
+    SpanishDNS dns = SpanishDNS(0xa4DfF80B4a1D748BF28BC4A271eD834689Ea3407);
     mapping(address => tDoctor) private doctors_;
 
     constructor() public
@@ -30,7 +33,16 @@ contract Doctor is StorageBasic
         owner_ = msg.sender;
     }
 
-    function addDoctor(address id, string memory speciality, uint collegiateID, eDoctorState status) external notExist(id)
+    event denied(address id);
+
+    modifier isDoctorAdmin()
+    {
+        AccessControl ac = AccessControl(dns.getAddress("AC"));
+        require(ac.has("doctor.admin", msg.sender), "The sender cannot perform this action");
+        _;
+    }
+
+    function addDoctor(address id, string memory speciality, uint collegiateID, eDoctorState status) external isDoctorAdmin() notExist(id)
     {
         doctors_[id] = tDoctor(id, speciality, collegiateID, status);
         add(id);

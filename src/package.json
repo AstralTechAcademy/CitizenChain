@@ -3,7 +3,7 @@
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
-    "@openzeppelin/contracts": "^4.3.0",
+    "@openzeppelin/contracts": "^4.9.3",
     "@types/chai": "^4.2.21",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.7.1",
@@ -31,8 +31,6 @@
     "console": "npx hardhat console",
     "pretest": "yarn compile",
     "test": "npx hardhat test",
-  
-    
     "main": "npx hardhat run main/Main.ts --network local",
     "titles": "npx hardhat run main/Title.ts --network local",
     "degrees": "npx hardhat run main/Degrees.ts --network local",
@@ -42,8 +40,6 @@
     "doctors": "npx hardhat run main/Doctors.ts --network local",
     "pharmacists": "npx hardhat run main/Pharmacists.ts --network local",
     "healthsystem": "npx hardhat run main/HealthSystem.ts --network local",
-
-
     "deploy": "npx hardhat run scripts/deploy.ts --network local",
     "erc20": "npx hardhat run scripts/erc20.ts",
     "nft": "npx hardhat run scripts/nft.ts --network mainnet",

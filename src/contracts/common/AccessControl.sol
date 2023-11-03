@@ -1,69 +1,77 @@
 pragma solidity >=0.6.0 <0.8.0;
-// Contract address already deployed: 0xA4cD3b0Eb6E5Ab5d8CE4065BcCD70040ADAB1F00
+pragma experimental ABIEncoderV2;
+
+enum eRole
+{
+    NONE,
+    VIEWER,
+    WRITER,
+    ADMIN
+}
+
+struct tRole
+{
+    string name_;
+    bool active_;
+    bool created_;
+}
 
 contract AccessControl {
 
-    mapping(address => bool) academicInstitution;
-    mapping(address => bool) civilRegistry;
-    mapping(uint => address) academicIndexes;
-    mapping(uint => address) civilRegistryIndexes;
-    uint academicIndex = 0;
-    uint civilRegistryIndex = 0;
-    address mOwner;
-
-    constructor() public {
-        mOwner = msg.sender;
+    address private owner_;
+    uint private count_;
+            // user addr
+    mapping(string => mapping(address => bool)) private users_;
+    mapping(string => tRole) private roles_;
+    
+    constructor()
+    {
+        owner_ = msg.sender;
     }
 
-    modifier onlyOwner()
+    modifier isOwner()
     {
-        require(mOwner == msg.sender,
-            "Caller is not the owner of AccessControl contract"
-        );
+        require(owner_ == msg.sender, "[AccessControl::isOwner] The sender is not the owner");
         _;
     }
 
-    modifier isAcademicInstitution (address add)
+    function changeOwner(address id) external isOwner()
     {
-        require(academicInstitution[add]);
-        _;
+        owner_ = id;
     }
 
-    function isAcademicInstitution1 (address add) public returns (bool)
+    event assigned(uint indexed timestamp, address id);
+
+    function createRole(string memory name) external isOwner()
     {
-        if(!academicInstitution[add])
-            return false;
-        return academicInstitution[add];
+        require(roles_[name].created_ == false);
+        roles_[name] = tRole(name, true, true);
+        count_++;
     }
 
-    function isCivilRegistry(address add) public returns (bool)
+    function get(string memory name) external view returns (tRole memory)
     {
-        if(!civilRegistry[add])
-            return false;
-        return civilRegistry[add];
+        require(roles_[name].created_ == true, "The role does not exist");
+        return roles_[name];
     }
 
-    function addAcademicInstitution (address addr) public onlyOwner
+    function assign(string memory role, address id) external isOwner()
     {
-        academicInstitution[addr] = true;
-        academicIndexes[academicIndex] = addr;
-        academicIndex = academicIndex + 1;
+        require(roles_[role].created_ == true);
+        require(users_[role][id] == false);
+        users_[role][id] = true;
+        emit assigned(block.timestamp, id);
     }
 
-    function addCivilRegistryInstitution (address addr) public onlyOwner
+    function count() external view returns (uint)
     {
-        civilRegistry[addr] = true;
-        civilRegistryIndexes[civilRegistryIndex] = addr;
-        civilRegistryIndex = civilRegistryIndex + 1;
+        return count_;
     }
 
-    function getInstitution(uint index) external view returns (address) {
-        return academicIndexes[academicIndex];
+    function has(string memory role, address id) external view returns (bool)
+    {
+        require(roles_[role].created_ == true, "[AccessControl::has] The role does not exist");
+        require(roles_[role].active_ == true, "[AccessControl::has] The role is inactive");
+        return users_[role][id];
     }
-
-
-    function getCivilRegistry(uint index) external view returns (address) {
-        return civilRegistryIndexes[civilRegistryIndex];
-    }
-
 }
