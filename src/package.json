@@ -32,6 +32,7 @@
     "pretest": "yarn compile",
     "test": "npx hardhat test",
     "main": "npx hardhat run main/Main.ts --network local",
+    "fund": "npx hardhat run main/Fund.ts --network local",
     "titles": "npx hardhat run main/Title.ts --network local",
     "degrees": "npx hardhat run main/Degrees.ts --network local",
     "institutions": "npx hardhat run main/Institutions.ts --network local",
