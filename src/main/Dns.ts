@@ -22,6 +22,7 @@ const main = async(): Promise<any> => {
 
     try
     {
+      await sc.addRegistry("Civil", smartContracts.CIVIL_REGISTER);
       await sc.addRegistry("AC", smartContracts.ACCESS_CONTROL);
       await sc.addRegistry("Doctors", smartContracts.DOCTORS);
       await sc.addRegistry("Pharmacist", smartContracts.PHARMACIST);

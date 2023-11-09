@@ -26,7 +26,7 @@ struct tDoctor
 contract Doctor is StorageBasic
 {
     address private owner_;
-    Dns dns = Dns(0xa4DfF80B4a1D748BF28BC4A271eD834689Ea3407);
+    Dns dns = Dns(0x52C84043CD9c865236f11d9Fc9F56aa003c1f922);
     mapping(address => tDoctor) private doctors_;
 
     constructor() public
@@ -64,5 +64,10 @@ contract Doctor is StorageBasic
     function isActive(address id) external view exist(id) returns (bool) 
     {
         return doctors_[id].status == eDoctorState.ACTIVE;
+    }
+
+    function list() external view returns (address[] memory)
+    {
+        return addresses_;
     }
 }

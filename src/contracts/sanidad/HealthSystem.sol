@@ -10,12 +10,12 @@ import "../common/Dns.sol";
 contract HealthSystem
 {
     address private owner_;
-    Dns dns = Dns(0x5dC0d3A9B168034f7aE890Bcce125DdEBF936987);
+    Dns dns = Dns(0x52C84043CD9c865236f11d9Fc9F56aa003c1f922);
     mapping(string => address) private contracts_;
     constructor() public
     {
         owner_ = msg.sender;
-        contracts_["Doctors"] = 0xf1db872E6454D553686b088c1Ea3889cF2FE3ABe;
+        contracts_["Doctors"] = 0xa1E47689f396fED7d18D797d9D31D727d2c0d483;
         contracts_["Dispatch"] = 0x9c4cD519100100ec3B3c7bff3Df7f52b575F5558;
         contracts_["Prescription"] = 0x224A8113006f2c986217A832e364D676C19C7c21;
         contracts_["Pharmacist"] = 0x20BC04ad10B6300F542e694f8c3aB44DB8Caac65;

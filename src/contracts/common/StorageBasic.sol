@@ -5,6 +5,7 @@ contract StorageBasic
 {
     mapping(address => bool) private exist_;
     uint private count_;
+    address[] addresses_;
 
     modifier notExist(address id)
     {
@@ -21,6 +22,7 @@ contract StorageBasic
     function add(address id) public
     {
         exist_[id] = true;
+        addresses_.push(id);
         count_++;
     }
 

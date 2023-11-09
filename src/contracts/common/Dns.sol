@@ -9,13 +9,13 @@ contract Dns {
 
     modifier notExist(string memory name)
     {
-        require(exist_[name] == false, "Contract already added in DNS");
+        require(exist_[name] == false, string(abi.encodePacked("Contract ", name, " already added in DNS")));
         _;
     }
 
     modifier exist(string memory name)
     {
-        require(exist_[name] == true, "Contract not added in DNS");
+        require(exist_[name] == true, string(abi.encodePacked("Contract ", name, " not added in DNS")));
         _;
     }
 

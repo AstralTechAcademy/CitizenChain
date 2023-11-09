@@ -57,8 +57,8 @@ contract AccessControl {
 
     function assign(string memory role, address id) external isOwner()
     {
-        require(roles_[role].created_ == true);
-        require(users_[role][id] == false);
+        require(roles_[role].created_ == true, string(abi.encodePacked("The role " , role, " does not exist")));
+        require(users_[role][id] == false, string(abi.encodePacked("The user " , id, " already assigned in role ", role)));
         users_[role][id] = true;
         emit assigned(block.timestamp, id);
     }
