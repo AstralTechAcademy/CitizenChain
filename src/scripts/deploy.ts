@@ -38,7 +38,9 @@ const main = async(): Promise<any> => {
   
   
   // -------------------------------
-  let contracts = ["CivilRegistry","TitleRegistry", "Education", "Doctor", "Prescription", "Pharmacist", "Dispatch", "HealthSystem"];
+  let contracts = ["CivilRegistry","TitleRegistry", "Education", "Doctor", 
+                    "Prescription", "Pharmacist", "Dispatch", "HealthSystem",
+                    "Laboratory"];
 
   for(var name of contracts)
   {
@@ -50,13 +52,13 @@ const main = async(): Promise<any> => {
     await storage.deployed()
     console.log(`${name} deployed to: ${storage.address}`)
 
-    if(name == "HealthSystem")
+    /*if(name == "HealthSystem")
     {
       var stFactory = await ethers.getContractFactory('AccessControl'); // Interface
       stFactory = stFactory.connect(admin); // change the user who sign the transactionn
       let sc = await stFactory.attach(accessControlSC.address);
       sc.assign(6000, storage.address);
-    }
+    }*/
   }
 
 }

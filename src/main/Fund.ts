@@ -44,6 +44,20 @@ const main = async(): Promise<any> => {
   mnemonic = "prevent impose hero skill gold index animal hotel sugar jump shove sun inflict gold promote flower theory uphold unknown gaze sword asset disagree teach"
   var healtMinistry = ethers.Wallet.fromMnemonic(mnemonic)
 
+  // Labs
+  mnemonic = "version drop seat blush wood keep average load protect grab once hammer toward vapor voice pyramid hurt fox alcohol aunt pulp fan network market"
+  var ownerBayer = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "legal inject devote slam undo process relax multiply finish brave awkward garment edit raven shoe fork sail cheese still feel birth keen flame gentle"
+  var ownerPfizer = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "fun shadow train sting useless toddler pioneer dove fun mirror ghost attitude quarter height load saddle final afraid capable cruel pass order hip supply"
+  var ownerGrifols = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "vendor dish before fog grocery flush lake erupt royal rival clutch wood pact member volcano resemble grow moral crouch test grit zebra control twenty"
+  var bayer = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "tumble common maple green math shoe slice actor shaft beef repeat waste shiver observe enemy slender cat funny seek velvet deny gadget success setup"
+  var pfizer = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "rude rib sight easy medal arm emotion square any genuine snap quantum bullet sauce insect region leader swamp layer common crime able mandate absent"
+  var grifols = ethers.Wallet.fromMnemonic(mnemonic)
+
   console.log("---------------------------------------------------")
   console.log("- Claves privadas de las instituciones y escuelas -")
   console.log("---------------------------------------------------\n")
@@ -65,6 +79,17 @@ const main = async(): Promise<any> => {
   console.log(" Pharmacist1: " + pharmacist1.privateKey)
   console.log(" Patient1 : " + patient1.privateKey)
   console.log(" HealtMinistry : " + healtMinistry.privateKey)
+  console.log("\n---------------------------------------------------")
+
+  console.log("---------------------------------------------------")
+  console.log("- Claves privadas de labs -")
+  console.log("---------------------------------------------------\n")
+  console.log(" Owner Bayer: " + ownerBayer.privateKey)
+  console.log(" Owner Pfizer: " + ownerPfizer.privateKey)
+  console.log(" Owner Grifols : " + ownerGrifols.privateKey)
+  console.log(" Bayer : " + bayer.privateKey)
+  console.log(" Pfizer : " + pfizer.privateKey)
+  console.log(" Grifols : " + grifols.privateKey)
   console.log("\n---------------------------------------------------")
 
   // Transfer funds
@@ -116,6 +141,54 @@ const main = async(): Promise<any> => {
     chainId: 4543,
   }
 
+  const tx6 = {
+    to: ownerBayer.address,
+    value: ethers.utils.parseEther("20000"),
+    gasLimit: 21000,
+    gasPrice: "0x5D21DBA00",
+    chainId: 4543,
+  }
+
+  const tx7 = {
+    to: ownerPfizer.address,
+    value: ethers.utils.parseEther("20000"),
+    gasLimit: 21000,
+    gasPrice: "0x5D21DBA00",
+    chainId: 4543,
+  }
+
+  const tx8 = {
+    to: ownerGrifols.address,
+    value: ethers.utils.parseEther("20000"),
+    gasLimit: 21000,
+    gasPrice: "0x5D21DBA00",
+    chainId: 4543,
+  }
+
+  const tx9 = {
+    to: bayer.address,
+    value: ethers.utils.parseEther("20000"),
+    gasLimit: 21000,
+    gasPrice: "0x5D21DBA00",
+    chainId: 4543,
+  }
+
+  const tx10 = {
+    to: pfizer.address,
+    value: ethers.utils.parseEther("20000"),
+    gasLimit: 21000,
+    gasPrice: "0x5D21DBA00",
+    chainId: 4543,
+  }
+
+  const tx11 = {
+    to: grifols.address,
+    value: ethers.utils.parseEther("20000"),
+    gasLimit: 21000,
+    gasPrice: "0x5D21DBA00",
+    chainId: 4543,
+  }
+
   const [admin] = await ethers.getSigners();
   
   await admin.sendTransaction(tx);
@@ -124,6 +197,12 @@ const main = async(): Promise<any> => {
   await admin.sendTransaction(tx3);
   await admin.sendTransaction(tx4);
   await admin.sendTransaction(tx5);
+  await admin.sendTransaction(tx6);
+  await admin.sendTransaction(tx7);
+  await admin.sendTransaction(tx8);
+  await admin.sendTransaction(tx9);
+  await admin.sendTransaction(tx10);
+  await admin.sendTransaction(tx11);
 
 
   await new Promise(f => setTimeout(f, 2000));

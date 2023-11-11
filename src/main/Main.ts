@@ -29,6 +29,7 @@ const loadTestData = async() => {
     await sc.addRegistry("Doctors", smartContracts.DOCTORS);
     await sc.addRegistry("Pharmacist", smartContracts.PHARMACIST);
     await sc.addRegistry("Prescription", smartContracts.PRESCRIPTION);
+    await sc.addRegistry("Laboratory", smartContracts.LABORATORY);
     await sc.addRegistry("Dispatch", smartContracts.DISPATCH);
   } 
   catch
@@ -108,6 +109,31 @@ const civilApp = async() => {
   }
 }
 
+const addLaboratory = async(sc: any) => {
+  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, 
+          doctor1, pharmacist1, patient1, healtMinistry,
+          ownerBayer, ownerPfizer, ownerGrifols, bayer, pfizer, grifols] = await ethers.getSigners();
+
+  console.log("Owner Bayer: " + ownerBayer.address)
+  console.log("Owner Pfizer: " + ownerPfizer.address)
+  console.log("Owner Grifols: " + ownerGrifols.address)
+  console.log("Bayer: " + bayer.address)
+  console.log("Pfizer: " + pfizer.address)
+  console.log("Grifols: " + grifols.address)
+
+  let cif = readLineSync.question("Laboratie CIF: ");
+  let name = readLineSync.question("Name: ");
+  let street = readLineSync.question("Street: ");
+  let city = readLineSync.question("City: ");
+  let country = readLineSync.question("Country ");
+  let owner = readLineSync.question("Owner: ");
+  await sc.addLaboratory(cif, name, street, city, country, owner);
+
+  await new Promise(f => setTimeout(f, 2000));
+
+  console.log(await sc.listLaboratories());
+}
+
 const newBirth = async(sc: any) => {
   const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
 
@@ -153,21 +179,60 @@ const healthApp = async() => {
   const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
 
   // Load contract already deployed in the subnet
-  var healthFactory = await ethers.getContractFactory("Doctor"); // change the user who sign the transactionn
+  var healthFactory = await ethers.getContractFactory("HealthSystem"); // change the user who sign the transactionn
   healthFactory = healthFactory.connect(admin); // change the user who sign the transactionn
-  const healthApp = await healthFactory.attach(smartContracts.DOCTORS);
+  const healthApp = await healthFactory.attach(smartContracts.HEALTH_SYSTEM);
+
+  // Load contract already deployed in the subnet
+  var doctorFactory = await ethers.getContractFactory("Doctor"); // change the user who sign the transactionn
+  doctorFactory = doctorFactory.connect(admin); // change the user who sign the transactionn
+  const doctorApp = await doctorFactory.attach(smartContracts.DOCTORS);
+
+  // Load contract already deployed in the subnet
+  var labactory = await ethers.getContractFactory("Laboratory"); // change the user who sign the transactionn
+  labactory = labactory.connect(admin); // change the user who sign the transactionn
+  const labApp = await labactory.attach(smartContracts.LABORATORY);
 
   let userRes;
   while (userRes !== '0') {
     console.log("");
     console.log("1. List doctors")
-    console.log("2. Add doctor")
+    console.log("2. List laboratories")
+    console.log("3. List medicines")
+    console.log("4. List pharmacist")
+    console.log("5. Add doctor")
+    console.log("6. Add laboratories")
+    console.log("7. Add medicine")
+    console.log("8. Add pharmacist")
+    console.log("9. Prescribe medicine")
+    console.log("10. Dispatch")
     let userRes = readLineSync.question("Pick an option: ");
     if (userRes === '1') {
-      await list(healthApp);
+      await list(doctorApp);
     } else if (userRes === '2') {
-      await addDoctor(healthApp);
+      await list(healthApp);
+    } else if (userRes === '3') {
+      await list(healthApp);
+    } else if (userRes === '4') {
+      await list(healthApp);
+    } else if (userRes === '5') {
+      await addDoctor(doctorApp);
+    } else if (userRes === '6') {
+      await addLaboratory(healthApp);
+    } else if (userRes === '7') {
+    } else if (userRes === '8') {
+    } else if (userRes === '9') {
+    } else if (userRes === '10') {
     } 
+     
+     
+    
+    
+    
+    
+    
+    
+    
   }
 }
 

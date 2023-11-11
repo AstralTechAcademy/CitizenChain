@@ -34,6 +34,13 @@ export const testAccounts = [
   "0xe8f87a1b739da2e11b02423375193eca2f138d82a931f853304deb181017d0e4", // Pharmacist1
   "0xcad40a4fef10d0dd49ebb54cf25efa2938832918fbef9aea018a80d302814fdf", // Patient1
   "0x835a7cea5bc66d3bc2f6a44d14c48c97e2d3660ee9931811bc90f635baa7d0f1", // HealthMinistry
+
+  "0xe5c0cae23babdbe8571f51645f5296e41f3f4658012a34e81871f6cae8fd33e3", // Owner Bayer
+  "0xc376880e3bf3cff02fefbcdb3376458f60988cf78c9c3f2cbd93369733486831", // Owner Pfizer
+  "0x376966873b777648bf3b41e6053b105118c0dee10427eb5b556f30a16ab1f2f6", // Owner Grifols
+  "0xad9358fd315d707e48f2a8e2982fd298de0e5d85ff1b0679a8728b79e95ae974", // Bayer
+  "0x514b1e0556dd49738f50694689c3c2065e3e0b31528aed1a100228642eaca6fc", // Pfizer
+  "0x10a6c5a0054663a1cc7b1d52233c4111cf225cc0b49ecfcd8fbb00c8e71049df", // Grifols
 ];
 
 task("accounts", "Prints the list of accounts", async (args, hre): Promise<void> => {

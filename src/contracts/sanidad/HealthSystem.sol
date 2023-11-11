@@ -5,12 +5,13 @@ pragma experimental ABIEncoderV2;
 import "./Prescription.sol";
 import "./Doctors.sol";
 import "./Dispatch.sol";
+import "./Laboratories.sol";
 import "../common/Dns.sol";
 
 contract HealthSystem
 {
     address private owner_;
-    Dns dns = Dns(0x52C84043CD9c865236f11d9Fc9F56aa003c1f922);
+    Dns dns = Dns(0xEFbe9981E4bdc773Bb438ceC391A40efA5BbF33E);
     mapping(string => address) private contracts_;
     constructor() public
     {
@@ -55,6 +56,17 @@ contract HealthSystem
     function expire(uint id) external isDoctorActive()
     {
         Prescription(contracts_["Prescription"]).expire(id);
+    }
+
+    function addLaboratory(string memory id, string memory name, string memory street, string memory city, string memory country, address owner) external
+    {
+        Laboratory sc = Laboratory(dns.getAddress("Laboratory"));
+        sc.addLab(id, name, street, city, country, owner);
+    }
+
+    function listLaboratories() external view returns (uint[] memory)
+    {
+        //return Laboratory(dns.getAddress("Laboratory")).list();
     }
 
     function getPrescription(uint id) external view returns (Item memory)
