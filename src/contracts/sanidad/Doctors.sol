@@ -26,7 +26,7 @@ struct tDoctor
 contract Doctor is StorageBasic
 {
     address private owner_;
-    Dns dns = Dns(0x52C84043CD9c865236f11d9Fc9F56aa003c1f922);
+    Dns dns = Dns(0x9c4cD519100100ec3B3c7bff3Df7f52b575F5558);
     mapping(address => tDoctor) private doctors_;
 
     constructor() public

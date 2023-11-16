@@ -2,7 +2,7 @@
 pragma solidity >=0.6.0 <0.8.0;
 pragma experimental ABIEncoderV2;
 
-import "../common/StorageUintBasic.sol";
+import "../common/StorageStringBasic.sol";
 
 enum eState 
 {
@@ -15,41 +15,46 @@ enum eState
 
 struct tMedicine
 {
-    uint id_;
+    string id_;
     string name_;
-    address laboratory_;
+    string laboratory_;
 
     eState state_;
 }
 
-contract Medicine is StorageUintBasic
+contract Medicine is StorageStringBasic
 {
     address private owner_;
-    mapping(uint => tMedicine) medicines_;
+    mapping(string => tMedicine) medicines_;
 
     constructor() public
     {
         owner_ = msg.sender;
     }
 
-    function add(uint id, string memory name, address laboratory, eState state) external notExist(id)
+    function addMedicine(string memory id, string memory name, string memory laboratory, eState state) external notExist(id)
     {
         medicines_[id] = tMedicine(id, name, laboratory, state);
         add(id);
     }
 
-    function get(uint id) external view exist(id) returns (tMedicine memory) 
+    function get(string memory id) external view exist(id) returns (tMedicine memory) 
     {
         return medicines_[id];
     }
 
-    function changeState(uint id, eState state) external exist(id)
+    function changeState(string memory id, eState state) external exist(id)
     {
         medicines_[id].state_ = state;
     }
 
-    function remove(uint id) external exist(id) 
+    function remove(string memory id) external exist(id) 
     {
         delete medicines_[id];
+    }
+
+    function list() external view returns(string[] memory) 
+    {
+        return ids_;
     }
 }

@@ -40,7 +40,7 @@ const main = async(): Promise<any> => {
   // -------------------------------
   let contracts = ["CivilRegistry","TitleRegistry", "Education", "Doctor", 
                     "Prescription", "Pharmacist", "Dispatch", "HealthSystem",
-                    "Laboratory"];
+                    "Laboratory", "Medicine"];
 
   for(var name of contracts)
   {

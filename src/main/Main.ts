@@ -131,7 +131,30 @@ const addLaboratory = async(sc: any) => {
 
   await new Promise(f => setTimeout(f, 2000));
 
-  console.log(await sc.listLaboratories());
+  await sc.listLaboratories();
+}
+
+const addMedicine = async(sc: any) => {
+  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, 
+          doctor1, pharmacist1, patient1, healtMinistry,
+          ownerBayer, ownerPfizer, ownerGrifols, bayer, pfizer, grifols] = await ethers.getSigners();
+
+  console.log("Owner Bayer: " + ownerBayer.address)
+  console.log("Owner Pfizer: " + ownerPfizer.address)
+  console.log("Owner Grifols: " + ownerGrifols.address)
+  console.log("Bayer: " + bayer.address)
+  console.log("Pfizer: " + pfizer.address)
+  console.log("Grifols: " + grifols.address)
+
+  let id = readLineSync.question("Medicine ID: ");
+  let name = readLineSync.question("Medicine Name: ");
+  let lab = readLineSync.question("Laboratie CIF: ");
+  let representative = readLineSync.question("Laboratory agent: ");
+  await sc.addMedicine(id, name, lab);
+
+  await new Promise(f => setTimeout(f, 2000));
+
+  await sc.listMedicines();
 }
 
 const newBirth = async(sc: any) => {
@@ -164,6 +187,17 @@ const addDoctor = async(sc: any) => {
   await sc.addDoctor(bID, speciality, collegiateID, 1);
 }
 
+const addPharmacist = async(sc: any) => {
+  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
+
+  console.log("Pharmacist1: " + pharmacist1.address)
+
+  let collegiateID = readLineSync.question("Collegiate ID: ");
+  let bID = readLineSync.question("Blockchain ID: ");
+
+  await sc.addPharmacist(bID, collegiateID);
+}
+
 const list = async(sc: any) => {
   const bIDs = await sc.list();
 
@@ -174,6 +208,83 @@ const list = async(sc: any) => {
     console.log(bID);
   }
 }
+
+const listLabs = async(sc: any) => {
+  const bIDs = await sc.listLaboratories();
+
+  await new Promise(f => setTimeout(f, 2000));
+
+  for(var bID of bIDs)
+  {
+    console.log(bID);
+  }
+}
+
+const listMedicines = async(sc: any) => {
+  const bIDs = await sc.listMedicines();
+
+  await new Promise(f => setTimeout(f, 2000));
+
+  for(var bID of bIDs)
+  {
+    console.log(bID);
+  }
+}
+
+const listPharmacists = async(sc: any) => {
+  const bIDs = await sc.listPharmacists();
+
+  await new Promise(f => setTimeout(f, 2000));
+
+  for(var bID of bIDs)
+  {
+    console.log(bID);
+  }
+}
+
+const prescribe = async(sc: any) => {
+  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
+
+
+  console.log("Patient1: " + patient1.address)
+
+  let medicineID = readLineSync.question("Medicine ID: ");
+  let patientID = readLineSync.question("Patient ID: ");
+  let dateTime = new Date()
+  let day = dateTime.getDay()
+  let month = dateTime.getMonth()
+  let year = dateTime.getFullYear()
+
+  // Load contract already deployed in the subnet
+  var healthFactory = await ethers.getContractFactory("HealthSystem"); // change the user who sign the transactionn
+  healthFactory = healthFactory.connect(doctor1); // change the user who sign the transactionn
+  const healthApp = await healthFactory.attach(smartContracts.HEALTH_SYSTEM);
+
+  await healthApp.prescribe(Math.floor(Math.random() * (10000 - 0 + 1) + 0), patientID, medicineID, day, month, year);
+
+}
+
+const showPrescriptions = async(sc: any) => {
+  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
+
+  console.log("Patient1: " + patient1.address)
+
+  let patientID = readLineSync.question("Patitent ID: ");
+
+  var healthFactory = await ethers.getContractFactory("HealthSystem"); // change the user who sign the transactionn
+  healthFactory = healthFactory.connect(doctor1); // change the user who sign the transactionn
+  const healthApp = await healthFactory.attach(smartContracts.HEALTH_SYSTEM);
+  
+  let prescriptions = await healthApp.getPrescriptionByPatient(patientID);
+
+  for(var prescription of prescriptions)
+  {
+    let pre = await healthApp.getPrescription(prescription);
+    let medicineItem = await healthApp.getMedicine(pre.medicine_);
+    console.log("Medicine prescribed: " + pre.medicine_ + " " + medicineItem.name_);
+  }
+}
+
 
 const healthApp = async() => {
   const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
@@ -205,34 +316,30 @@ const healthApp = async() => {
     console.log("7. Add medicine")
     console.log("8. Add pharmacist")
     console.log("9. Prescribe medicine")
-    console.log("10. Dispatch")
+    console.log("10. Show presciptions")
+    console.log("11. Dispatch")
     let userRes = readLineSync.question("Pick an option: ");
     if (userRes === '1') {
       await list(doctorApp);
     } else if (userRes === '2') {
-      await list(healthApp);
+      await listLabs(healthApp);
     } else if (userRes === '3') {
-      await list(healthApp);
+      await listMedicines(healthApp);
     } else if (userRes === '4') {
-      await list(healthApp);
+      await listPharmacists(healthApp);
     } else if (userRes === '5') {
       await addDoctor(doctorApp);
     } else if (userRes === '6') {
       await addLaboratory(healthApp);
     } else if (userRes === '7') {
+      await addMedicine(healthApp);
     } else if (userRes === '8') {
+      await addPharmacist(healthApp);
     } else if (userRes === '9') {
+      await prescribe(healthApp);
     } else if (userRes === '10') {
+      await showPrescriptions(healthApp);
     } 
-     
-     
-    
-    
-    
-    
-    
-    
-    
   }
 }
 

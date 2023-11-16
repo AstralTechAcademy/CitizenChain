@@ -8,7 +8,7 @@ struct Item
     address patient_;
     address doctor_;
 
-    uint medicine_;
+    string medicine_;
 
     uint day_;
     uint month_;
@@ -23,6 +23,7 @@ contract Prescription
     mapping(uint => Item) records_;
     mapping(uint => bool) exist_;
     mapping(address => uint[]) patient2Records_;
+    uint[] pIds_;
 
     constructor() public
     {
@@ -43,11 +44,12 @@ contract Prescription
 
     function prescribe(uint id,
                     address patient, address doctor, 
-                    uint medicine, uint day, uint month, uint year) external notExist(id)
+                    string memory medicine, uint day, uint month, uint year) external notExist(id)
     {
         records_[id] = Item(id, patient, doctor, medicine, day, month, year, false);
         patient2Records_[patient].push(id);
         exist_[id] = true;
+        pIds_.push(id);
     }
 
     function isExpired(uint id) external view returns (bool)
@@ -68,5 +70,10 @@ contract Prescription
     function getPrescriptionByPatient(address id) external view returns (uint[] memory)
     {
         return patient2Records_[id];
+    }
+
+    function getPrescriptions() external view returns (uint[] memory)
+    {
+        return pIds_;
     }
 }

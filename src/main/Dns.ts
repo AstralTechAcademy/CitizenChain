@@ -34,6 +34,7 @@ const main = async(): Promise<any> => {
           await sc.addRegistry("AC", smartContracts.ACCESS_CONTROL);
           await sc.addRegistry("Doctors", smartContracts.DOCTORS);
           await sc.addRegistry("Pharmacist", smartContracts.PHARMACIST);
+          await sc.addRegistry("Medicine", smartContracts.MEDICINE);
           await sc.addRegistry("Prescription", smartContracts.PRESCRIPTION);
           await sc.addRegistry("Laboratory", smartContracts.LABORATORY);
           await sc.addRegistry("Dispatch", smartContracts.DISPATCH);
@@ -50,6 +51,7 @@ const main = async(): Promise<any> => {
           await sc.updateRegistry("AC", smartContracts.ACCESS_CONTROL);
           await sc.updateRegistry("Doctors", smartContracts.DOCTORS);
           await sc.updateRegistry("Pharmacist", smartContracts.PHARMACIST);
+          await sc.updateRegistry("Medicine", smartContracts.MEDICINE);
           await sc.updateRegistry("Prescription", smartContracts.PRESCRIPTION);
           await sc.updateRegistry("Laboratory", smartContracts.LABORATORY);
           await sc.updateRegistry("Dispatch", smartContracts.DISPATCH);

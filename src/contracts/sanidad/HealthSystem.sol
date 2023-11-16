@@ -6,12 +6,14 @@ import "./Prescription.sol";
 import "./Doctors.sol";
 import "./Dispatch.sol";
 import "./Laboratories.sol";
+import "./Medicines.sol";
+import "./Pharmacists.sol";
 import "../common/Dns.sol";
 
 contract HealthSystem
 {
     address private owner_;
-    Dns dns = Dns(0xEFbe9981E4bdc773Bb438ceC391A40efA5BbF33E);
+    Dns dns = Dns(0x7B4982e1F7ee384F206417Fb851a1EB143c513F9);
     mapping(string => address) private contracts_;
     constructor() public
     {
@@ -41,10 +43,10 @@ contract HealthSystem
     }
 
     function prescribe(uint id,
-                    address patient, address doctor, 
-                    uint medicine, uint day, uint month, uint year) external isDoctorActive()
+                    address patient,
+                    string memory medicine, uint day, uint month, uint year) external //isDoctorActive()
     {
-        Prescription(contracts_["Prescription"]).prescribe(id, patient, doctor, medicine, day, month, year);
+        Prescription(dns.getAddress("Prescription")).prescribe(id, patient, msg.sender, medicine, day, month, year);
     }
 
     function dispatch(uint prescriptionID, address pharmacist,
@@ -55,8 +57,14 @@ contract HealthSystem
 
     function expire(uint id) external isDoctorActive()
     {
-        Prescription(contracts_["Prescription"]).expire(id);
+        Prescription(dns.getAddress("Prescription")).expire(id);
     }
+
+    function addPharmacist(address id, uint collegiateID) external
+    {
+        Pharmacist sc = Pharmacist(dns.getAddress("Pharmacist"));
+        sc.addPharmacist(id, collegiateID, ePharmacistState.ACTIVE);
+    }    
 
     function addLaboratory(string memory id, string memory name, string memory street, string memory city, string memory country, address owner) external
     {
@@ -64,19 +72,45 @@ contract HealthSystem
         sc.addLab(id, name, street, city, country, owner);
     }
 
-    function listLaboratories() external view returns (uint[] memory)
+    function addMedicine(string memory id, string memory name, string memory laboratory) external
     {
-        //return Laboratory(dns.getAddress("Laboratory")).list();
+        Medicine sc = Medicine(dns.getAddress("Medicine"));
+        sc.addMedicine(id, name, laboratory, eState.DEVELOPMENT);
+    }
+
+    function getMedicine(string memory id) external view returns (tMedicine memory) 
+    {
+        return Medicine(dns.getAddress("Medicine")).get(id);
+    }
+
+    function listLaboratories() external view returns (string[] memory)
+    {
+        return Laboratory(dns.getAddress("Laboratory")).list();
+    }
+
+    function listPharmacists() external view returns (address[] memory)
+    {
+        return Pharmacist(dns.getAddress("Pharmacist")).list();
+    }
+
+    function listMedicines() external view returns (string[] memory)
+    {
+        return Medicine(dns.getAddress("Medicine")).list();
+    }        
+
+    function getPrescriptions() external view returns (uint[] memory)
+    {
+        return Prescription(dns.getAddress("Prescription")).getPrescriptions();
     }
 
     function getPrescription(uint id) external view returns (Item memory)
     {
-        return Prescription(contracts_["Prescription"]).getPrescription(id);
+        return Prescription(dns.getAddress("Prescription")).getPrescription(id);
     }
 
     function getPrescriptionByPatient(address id) external view returns (uint[] memory)
     {
-        return Prescription(contracts_["Prescription"]).getPrescriptionByPatient(id);
+        return Prescription(dns.getAddress("Prescription")).getPrescriptionByPatient(id);
     }
 
     function getDispatches(uint prescriptionID) external view returns (tDispatch[] memory)

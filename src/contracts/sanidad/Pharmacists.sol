@@ -43,4 +43,9 @@ contract Pharmacist is StorageBasic
     {
         pharmacists_[id].status = state;
     }
+
+    function list() external view returns(address[] memory) 
+    {
+        return addresses_;
+    }
 }

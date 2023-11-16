@@ -19,7 +19,7 @@ contract Dns {
         _;
     }
 
-    function getAddress(string memory name) public exist(name) returns(address)
+    function getAddress(string memory name) external view exist(name) returns(address)
     {
         return records[name];
     }
