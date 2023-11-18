@@ -21,7 +21,7 @@ const listUser = async(sc: any) => {
 const addUser = async(sc: any) => {
   var userRes = readLineSync.question("Pick the public address of the user: ");
 
-  await sc.assign("doctor.admin", userRes);
+  await sc.assign("health.admin", userRes);
 
 }
 

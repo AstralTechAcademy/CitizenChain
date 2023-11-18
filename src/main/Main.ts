@@ -48,13 +48,13 @@ const loadTestData = async() => {
 
   try
   {
-    ac.createRole("doctor.admin");
+    ac.createRole("health.admin");
     await new Promise(f => setTimeout(f, 1000));
-    ac.assign("doctor.admin", admin.address);
+    ac.assign("health.admin", admin.address);
   } 
   catch
   {
-    console.log("User already assigned in role doctor.admin");
+    console.log("User already assigned in role health.admin");
   }
 
   await new Promise(f => setTimeout(f, 1000));
@@ -79,6 +79,12 @@ const loadTestData = async() => {
     surname2 = "Otamendi";
     address = citizen1.address;
     await civilApp.newBirth(address, name, surname1, surname2);
+
+    name = "Carmen";
+    surname1 = "Jiménez";
+    surname2 = "Fuentes";
+    address = pharmacist1.address;
+    await civilApp.newBirth(address, name, surname1, surname2);
   } 
   catch
   {
@@ -98,11 +104,11 @@ const civilApp = async() => {
   let userRes;
   while (userRes !== '0') {
     console.log("");
-    console.log("1. List people")
+    console.log("1. Show people")
     console.log("2. Register new birth")
     let userRes = readLineSync.question("Pick an option: ");
     if (userRes === '1') {
-      await list(civilApp);
+      await showPeople(civilApp);
     } else if (userRes === '2') {
       await newBirth(civilApp);
     } 
@@ -324,6 +330,19 @@ const showDispatches = async(sc: any) => {
   }*/
 }
 
+const showPeople = async(sc: any) => {  
+  let peopleAddr = await sc.list();
+
+  console.log(peopleAddr)
+
+  for(var personAddr of peopleAddr)
+  {
+    console.log(await sc.showPerson(personAddr));
+    //let medicineItem = await healthApp.getMedicine(pre.medicine_);
+    //console.log("[" + pre.id_ +  "] " + pre.medicine_ + "-" + medicineItem.name_);
+  }
+}
+
 
 const healthApp = async() => {
   const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
@@ -368,7 +387,7 @@ const healthApp = async() => {
     } else if (userRes === '4') {
       await listPharmacists(healthApp);
     } else if (userRes === '5') {
-      await addDoctor(doctorApp);
+      await addDoctor(healthApp);
     } else if (userRes === '6') {
       await addLaboratory(healthApp);
     } else if (userRes === '7') {

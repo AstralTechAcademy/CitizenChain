@@ -26,7 +26,7 @@ struct tDoctor
 contract Doctor is StorageBasic
 {
     address private owner_;
-    Dns dns = Dns(0x9c4cD519100100ec3B3c7bff3Df7f52b575F5558);
+    Dns dns = Dns(0x7B4982e1F7ee384F206417Fb851a1EB143c513F9);
     mapping(address => tDoctor) private doctors_;
 
     constructor() public
@@ -36,21 +36,7 @@ contract Doctor is StorageBasic
 
     event denied(address id);
 
-    modifier isAdmin()
-    {
-        AccessControl ac = AccessControl(dns.getAddress("AC"));
-        require(ac.has("doctor.admin", msg.sender), "The sender cannot perform this action");
-        _;
-    }
-
-    modifier isPerson(address id)
-    {
-        CivilRegistry ac = CivilRegistry(dns.getAddress("Civil"));
-        require(ac.alive(id), "The address is not a person registered in the civil registry");
-        _;
-    }
-
-    function addDoctor(address id, string memory speciality, uint collegiateID, eDoctorState status) external isAdmin() isPerson(id) notExist(id)
+    function addDoctor(address id, string memory speciality, uint collegiateID, eDoctorState status) external notExist(id)
     {
         doctors_[id] = tDoctor(id, speciality, collegiateID, status);
         add(id);

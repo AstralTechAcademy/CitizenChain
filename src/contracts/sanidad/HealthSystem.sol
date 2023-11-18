@@ -24,6 +24,20 @@ contract HealthSystem
         contracts_["Pharmacist"] = 0x20BC04ad10B6300F542e694f8c3aB44DB8Caac65;
     }
 
+    modifier isAdmin()
+    {
+        AccessControl ac = AccessControl(dns.getAddress("AC"));
+        require(ac.has("health.admin", msg.sender), "The sender cannot perform this action");
+        _;
+    }
+
+    modifier isPerson(address id)
+    {
+        CivilRegistry ac = CivilRegistry(dns.getAddress("Civil"));
+        require(ac.alive(id), "The address is not a person registered in the civil registry");
+        _;
+    }
+
     modifier isDoctorActive()
     {
         require(Doctor(dns.getAddress("Doctors")).isActive(msg.sender) == true, "The sender is not an active doctor");
@@ -44,13 +58,13 @@ contract HealthSystem
 
     function prescribe(uint id,
                     address patient,
-                    string memory medicine, uint day, uint month, uint year) external //isDoctorActive()
+                    string memory medicine, uint day, uint month, uint year) external isDoctorActive()
     {
         Prescription(dns.getAddress("Prescription")).prescribe(id, patient, msg.sender, medicine, day, month, year);
     }
 
     function dispatch(uint prescriptionID,
-                    uint day, uint month, uint year) external //isPharmacistActive() prescriptionNotExpired(prescriptionID)
+                    uint day, uint month, uint year) external isPharmacistActive() prescriptionNotExpired(prescriptionID)
     {
         Dispatch(dns.getAddress("Dispatch")).dispatch(prescriptionID, msg.sender, day, month, year);
     }
@@ -60,16 +74,20 @@ contract HealthSystem
         Prescription(dns.getAddress("Prescription")).expire(id);
     }
 
+    function addDoctor(address id, string memory speciality, uint collegiateID, eDoctorState status) external isAdmin() isPerson(id)
+    {
+        Doctor(dns.getAddress("Doctors")).addDoctor(id, speciality, collegiateID, status);
+    }
+
     function addPharmacist(address id, uint collegiateID) external
     {
         Pharmacist sc = Pharmacist(dns.getAddress("Pharmacist"));
         sc.addPharmacist(id, collegiateID, ePharmacistState.ACTIVE);
     }    
 
-    function addLaboratory(string memory id, string memory name, string memory street, string memory city, string memory country, address owner) external
+    function addLaboratory(string memory id, string memory name, string memory street, string memory city, string memory country, address owner) external isAdmin() isPerson(owner)
     {
-        Laboratory sc = Laboratory(dns.getAddress("Laboratory"));
-        sc.addLab(id, name, street, city, country, owner);
+        Laboratory(dns.getAddress("Laboratory")).addLab(id, name, street, city, country, owner);
     }
 
     function addMedicine(string memory id, string memory name, string memory laboratory) external

@@ -1,5 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.6.0 <0.8.0;
+pragma experimental ABIEncoderV2;
 
 import "../common/SpanishContract.sol";
 
@@ -68,6 +69,12 @@ contract CivilRegistry {
   {
     require(exist_[id] == true, "The person is not in civil registry");
     return registry_[id].alive_ == true;
+  }
+
+  function showPerson(address id) external view returns (tPerson memory)
+  {
+      require(exist_[id] == true, "[AccessControl::showPerson] The person id does not exist");
+      return registry_[id];
   }
 
 }
