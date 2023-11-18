@@ -26,19 +26,19 @@ contract HealthSystem
 
     modifier isDoctorActive()
     {
-        require(Doctor(contracts_["Doctors"]).isActive(msg.sender) == true, "The sender is not an active doctor");
+        require(Doctor(dns.getAddress("Doctors")).isActive(msg.sender) == true, "The sender is not an active doctor");
         _;
     }
 
     modifier isPharmacistActive()
     {
-        require(Pharmacist(contracts_["Pharmacist"]).isActive(msg.sender) == true, "The sender is not an active pharmacist");
+        require(Pharmacist(dns.getAddress("Pharmacist")).isActive(msg.sender) == true, "The sender is not an active pharmacist");
         _;
     }
 
     modifier prescriptionNotExpired(uint id)
     {
-        require(Prescription(contracts_["Prescription"]).isExpired(id) == false, "The prescription has expired");
+        require(Prescription(dns.getAddress("Prescription")).isExpired(id) == false, "The prescription has expired");
         _;
     }
 
@@ -49,10 +49,10 @@ contract HealthSystem
         Prescription(dns.getAddress("Prescription")).prescribe(id, patient, msg.sender, medicine, day, month, year);
     }
 
-    function dispatch(uint prescriptionID, address pharmacist,
-                    uint day, uint month, uint year) external isPharmacistActive() prescriptionNotExpired(prescriptionID)
+    function dispatch(uint prescriptionID,
+                    uint day, uint month, uint year) external //isPharmacistActive() prescriptionNotExpired(prescriptionID)
     {
-        Dispatch(contracts_["Dispatch"]).dispatch(prescriptionID, pharmacist, day, month, year);
+        Dispatch(dns.getAddress("Dispatch")).dispatch(prescriptionID, msg.sender, day, month, year);
     }
 
     function expire(uint id) external isDoctorActive()
@@ -113,9 +113,9 @@ contract HealthSystem
         return Prescription(dns.getAddress("Prescription")).getPrescriptionByPatient(id);
     }
 
-    function getDispatches(uint prescriptionID) external view returns (tDispatch[] memory)
+    function getDispatchesByPrescription(uint id) external view returns (tDispatch[] memory)
     {
-        return Dispatch(contracts_["Dispatch"]).getDispatches(prescriptionID);
+        return Dispatch(dns.getAddress("Dispatch")).getDispatchesByPrescription(id);
     }
 
     function getBlockNumber() external view returns (uint)

@@ -264,6 +264,24 @@ const prescribe = async(sc: any) => {
 
 }
 
+const dispatch = async(sc: any) => {
+  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
+
+  let prescriptionID = readLineSync.question("Presciption ID: ");
+  let dateTime = new Date()
+  let day = dateTime.getDay()
+  let month = dateTime.getMonth()
+  let year = dateTime.getFullYear()
+
+  // Load contract already deployed in the subnet
+  var healthFactory = await ethers.getContractFactory("HealthSystem"); // change the user who sign the transactionn
+  healthFactory = healthFactory.connect(pharmacist1); // change the user who sign the transactionn
+  const healthApp = await healthFactory.attach(smartContracts.HEALTH_SYSTEM);
+
+  await healthApp.dispatch(prescriptionID, day, month, year);
+
+}
+
 const showPrescriptions = async(sc: any) => {
   const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
 
@@ -281,8 +299,29 @@ const showPrescriptions = async(sc: any) => {
   {
     let pre = await healthApp.getPrescription(prescription);
     let medicineItem = await healthApp.getMedicine(pre.medicine_);
-    console.log("Medicine prescribed: " + pre.medicine_ + " " + medicineItem.name_);
+    console.log("[" + pre.id_ +  "] " + pre.medicine_ + "-" + medicineItem.name_);
   }
+}
+
+const showDispatches = async(sc: any) => {
+  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
+
+  let preID = readLineSync.question("Prescription ID: ");
+
+  var healthFactory = await ethers.getContractFactory("HealthSystem"); // change the user who sign the transactionn
+  healthFactory = healthFactory.connect(pharmacist1); // change the user who sign the transactionn
+  const healthApp = await healthFactory.attach(smartContracts.HEALTH_SYSTEM);
+  
+  let dispatches = await healthApp.getDispatchesByPrescription(preID);
+
+  console.log(dispatches)
+
+  /*for(var dispatch of dispatches)
+  {
+    let pre = await healthApp.getDispatch(dispatch);
+    //let medicineItem = await healthApp.getMedicine(pre.medicine_);
+    //console.log("[" + pre.id_ +  "] " + pre.medicine_ + "-" + medicineItem.name_);
+  }*/
 }
 
 
@@ -318,6 +357,7 @@ const healthApp = async() => {
     console.log("9. Prescribe medicine")
     console.log("10. Show presciptions")
     console.log("11. Dispatch")
+    console.log("12. Show dispatches")
     let userRes = readLineSync.question("Pick an option: ");
     if (userRes === '1') {
       await list(doctorApp);
@@ -339,6 +379,10 @@ const healthApp = async() => {
       await prescribe(healthApp);
     } else if (userRes === '10') {
       await showPrescriptions(healthApp);
+    } else if (userRes === '11') {
+      await dispatch(healthApp);
+    } else if (userRes === '12') {
+      await showDispatches(healthApp);
     } 
   }
 }
@@ -348,6 +392,11 @@ const main = async(): Promise<any> => {
 // Load hardhat.config.ts addresses
 const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
 
+var url = 'http://localhost:9650/ext/bc/spain/rpc';
+var customHttpProvider = new ethers.providers.JsonRpcProvider(url);
+console.log(await customHttpProvider.getBalance(admin.address));
+console.log(await customHttpProvider.getBlockNumber());
+  
 let userRes;
 while (userRes !== '0') {
     console.log("");

@@ -19,6 +19,7 @@ contract Dispatch
 {
     address private owner_;  
     mapping(uint => tDispatch[]) dispatches_;
+    mapping(uint => bool) exist_;
 
     constructor() public
     {
@@ -29,10 +30,11 @@ contract Dispatch
                     uint day, uint month, uint year) external
     {
         dispatches_[prescriptionID].push(tDispatch(prescriptionID, day, month, year, pharmacist));
+        exist_[prescriptionID] = true;
     }
 
-    function getDispatches(uint prescriptionID) external view returns (tDispatch[] memory)
+    function getDispatchesByPrescription(uint id) external view returns (tDispatch[] memory)
     {
-        return dispatches_[prescriptionID];
+        return dispatches_[id];
     }
 }
