@@ -43,7 +43,8 @@ const main = async(): Promise<any> => {
   var patient1 = ethers.Wallet.fromMnemonic(mnemonic)
   mnemonic = "prevent impose hero skill gold index animal hotel sugar jump shove sun inflict gold promote flower theory uphold unknown gaze sword asset disagree teach"
   var healtMinistry = ethers.Wallet.fromMnemonic(mnemonic)
-
+  mnemonic = "thrive honey describe tent present know tuition whip lock smoke fish client either duty invite marriage bean lion rule physical move upper crew sorry"
+  var student1 = ethers.Wallet.fromMnemonic(mnemonic)
   // Labs
   mnemonic = "version drop seat blush wood keep average load protect grab once hammer toward vapor voice pyramid hurt fox alcohol aunt pulp fan network market"
   var ownerBayer = ethers.Wallet.fromMnemonic(mnemonic)
@@ -78,6 +79,7 @@ const main = async(): Promise<any> => {
   console.log(" Doctor1: " + doctor1.privateKey)
   console.log(" Pharmacist1: " + pharmacist1.privateKey)
   console.log(" Patient1 : " + patient1.privateKey)
+  console.log(" Student1 : " + student1.privateKey)
   console.log(" HealtMinistry : " + healtMinistry.privateKey)
   console.log("\n---------------------------------------------------")
 
@@ -189,6 +191,14 @@ const main = async(): Promise<any> => {
     chainId: 4543,
   }
 
+  const tx12 = {
+    to: student1.address,
+    value: ethers.utils.parseEther("20000"),
+    gasLimit: 21000,
+    gasPrice: "0x5D21DBA00",
+    chainId: 4543,
+  }
+
   const [admin] = await ethers.getSigners();
   
   await admin.sendTransaction(tx);
@@ -203,6 +213,7 @@ const main = async(): Promise<any> => {
   await admin.sendTransaction(tx9);
   await admin.sendTransaction(tx10);
   await admin.sendTransaction(tx11);
+  await admin.sendTransaction(tx12);
 
 
   await new Promise(f => setTimeout(f, 2000));

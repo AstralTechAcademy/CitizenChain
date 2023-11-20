@@ -33,6 +33,7 @@ export const testAccounts = [
   "0x1bc06678006b33cf10d7f4a1631a0e03dd7f05e5c1348f884bb0b3af8f3b70c4", // Doctor1
   "0xe8f87a1b739da2e11b02423375193eca2f138d82a931f853304deb181017d0e4", // Pharmacist1
   "0xcad40a4fef10d0dd49ebb54cf25efa2938832918fbef9aea018a80d302814fdf", // Patient1
+  "0xa86a48435e77d1ecdba60437dac0a70b3111d243a0f2ba91ef48b92fe3841b54", // Student1
   "0x835a7cea5bc66d3bc2f6a44d14c48c97e2d3660ee9931811bc90f635baa7d0f1", // HealthMinistry
 
   "0xe5c0cae23babdbe8571f51645f5296e41f3f4658012a34e81871f6cae8fd33e3", // Owner Bayer

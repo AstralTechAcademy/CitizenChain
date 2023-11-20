@@ -51,7 +51,7 @@ const main = async(): Promise<any> => {
     console.log("Citizen1 Priv key: " + citizen1.privateKey )*/
 
     // Load hardhat.config.ts addresses
-    const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, healtMinistry] = await ethers.getSigners();
+    const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, healtMinistry] = await ethers.getSigners();
 
 
     // Load contract already deployed in the subnet

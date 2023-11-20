@@ -38,10 +38,15 @@ const main = async(): Promise<any> => {
           await sc.addRegistry("Prescription", smartContracts.PRESCRIPTION);
           await sc.addRegistry("Laboratory", smartContracts.LABORATORY);
           await sc.addRegistry("Dispatch", smartContracts.DISPATCH);
+          await sc.addRegistry("AcademicApp", smartContracts.ACADEMIC_APP);
+          await sc.addRegistry("Institutions", smartContracts.INSTITUTIONS);
+          await sc.addRegistry("Degrees", smartContracts.DEGREES);
+          await sc.addRegistry("InstitutionsDegrees", smartContracts.INS_DEGREES);
+          await sc.addRegistry("DegreesStudents", smartContracts.DEGREES_STUDENTS);
         } 
         catch
         {
-          console.log("Contract already added in DNS");
+          console.log("Contract already added in DNS 1");
         }
       } 
       else if (userRes === '2') {
@@ -55,10 +60,15 @@ const main = async(): Promise<any> => {
           await sc.updateRegistry("Prescription", smartContracts.PRESCRIPTION);
           await sc.updateRegistry("Laboratory", smartContracts.LABORATORY);
           await sc.updateRegistry("Dispatch", smartContracts.DISPATCH);
+          await sc.updateRegistry("AcademicApp", smartContracts.ACADEMIC_APP);
+          await sc.updateRegistry("Institutions", smartContracts.INSTITUTIONS);
+          await sc.updateRegistry("Degrees", smartContracts.DEGREES);          
+          await sc.updateRegistry("InstitutionsDegrees", smartContracts.INS_DEGREES);
+          await sc.updateRegistry("DegreesStudents", smartContracts.DEGREES_STUDENTS);
         } 
         catch
         {
-          console.log("Contract already added in DNS");
+          console.log("Contract already added in DNS 2");
         }
       }
 

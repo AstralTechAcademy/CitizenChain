@@ -2,34 +2,34 @@
 pragma solidity >=0.6.0 <0.8.0;
 pragma experimental ABIEncoderV2;
 
-import "./EducationAC.sol";
+import "../common/StorageStringBasic.sol";
 
 
 struct Institution {
-  address id; // wallet institution
-
+  string id_; // wallet institution
   string name_;
 }
 
-contract Institutions is EducationAC {
+contract Institutions is StorageStringBasic {
 
   address private owner_;
   
-  mapping(address => Institution) institutions_;
+  mapping(string => Institution) institutions_;
 
   constructor() public {
     owner_ = msg.sender;
   }
 
-  function addInstitution(address id, string memory name) external isOwner(owner_) {
+  function addInstitution(string memory id, string memory name) external {
     institutions_[id] = Institution(id, name);
+    add(id);
   }
 
-  function getInstitution(address id) external view returns (string memory) {
-    return institutions_[id].name_;
+  function getInstitution(string memory id) external view returns (Institution memory) {
+    return institutions_[id];
   }
 
-  function owner2() external view returns (address) {
-    return owner_;
+  function getInstitutions() external view returns (string[] memory) {
+    return ids_;
   }
 }
