@@ -6,7 +6,7 @@ import "./EducationAC.sol";
 import "./Institutions.sol";
 import "./InstitutionsDegrees.sol";
 import "./DegreesStudents.sol";
-import "./Title.sol";
+import "./Titles.sol";
 import "./Degrees.sol";
 import "../common/Dns.sol";
 
@@ -62,8 +62,16 @@ contract AcademicApp
     return DegreesStudents(dns.getAddress("DegreesStudents")).getDegreesByStudent(studentID);
   }
 
+  function getTitlesByStudent(address studentID) external view returns (string[] memory) {
+    return Titles(dns.getAddress("Titles")).getTitlesByStudent(studentID);
+  }
+
   function getStudentsByDegree(string memory degreeID) external view returns (address[] memory) {
     return DegreesStudents(dns.getAddress("DegreesStudents")).getStudentsByDegree(degreeID);
+  }
+
+  function getTitles() external view returns (string[] memory) {
+    return Titles(dns.getAddress("Titles")).getTitles();
   }
   
 }

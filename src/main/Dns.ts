@@ -41,6 +41,7 @@ const main = async(): Promise<any> => {
           await sc.addRegistry("AcademicApp", smartContracts.ACADEMIC_APP);
           await sc.addRegistry("Institutions", smartContracts.INSTITUTIONS);
           await sc.addRegistry("Degrees", smartContracts.DEGREES);
+          await sc.addRegistry("Titles", smartContracts.TITLES);
           await sc.addRegistry("InstitutionsDegrees", smartContracts.INS_DEGREES);
           await sc.addRegistry("DegreesStudents", smartContracts.DEGREES_STUDENTS);
         } 
@@ -62,7 +63,8 @@ const main = async(): Promise<any> => {
           await sc.updateRegistry("Dispatch", smartContracts.DISPATCH);
           await sc.updateRegistry("AcademicApp", smartContracts.ACADEMIC_APP);
           await sc.updateRegistry("Institutions", smartContracts.INSTITUTIONS);
-          await sc.updateRegistry("Degrees", smartContracts.DEGREES);          
+          await sc.updateRegistry("Degrees", smartContracts.DEGREES);
+          await sc.updateRegistry("Titles", smartContracts.TITLES);         
           await sc.updateRegistry("InstitutionsDegrees", smartContracts.INS_DEGREES);
           await sc.updateRegistry("DegreesStudents", smartContracts.DEGREES_STUDENTS);
         } 

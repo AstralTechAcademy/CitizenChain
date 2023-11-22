@@ -20,7 +20,7 @@ contract Titles is StorageStringBasic {
 
   address private owner_;  
   mapping(string => Title) titles_;
-  mapping(address => string[]) students_;
+  mapping(address => string[]) student2Titles_;
   mapping(string => string[]) inst2titles_;
 
   constructor() public {
@@ -29,7 +29,7 @@ contract Titles is StorageStringBasic {
 
   function emitTitle(string memory id, string memory institution, string memory degree, address student, uint16 year) external notExist(id) {
     titles_[id] = Title(id, institution, degree, student, year, "Active");
-    students_[student].push(id);
+    student2Titles_[student].push(id);
     inst2titles_[institution].push(id);
     add(id);
   }
@@ -38,8 +38,12 @@ contract Titles is StorageStringBasic {
     return titles_[id];
   }
 
+  function getTitles() external view returns (string[] memory) {
+    return ids_;
+  }
+
   function getTitlesByStudent(address id) external view returns (string[] memory) {
-    return students_[id];
+    return student2Titles_[id];
   }
 
   function getTitlesByInstitution(string memory id) external view returns (string[] memory) {

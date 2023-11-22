@@ -314,6 +314,52 @@ const listDegrees = async(sc: any) => {
   }
 }
 
+const listStudentsByDegree = async(sc: any) => {
+  const bIDs = await sc.listInstitutions();
+
+  await new Promise(f => setTimeout(f, 2000));
+
+  for(var bID of bIDs)
+  {
+    let institutcion = await sc.getInstitution(bID);
+    console.log(institutcion.name_)
+    console.log("----------------------------")
+
+    let degreeIDs = await sc.getDegreesByInstitution(institutcion.id_);
+
+    for(var degreeID of degreeIDs)
+    {
+      let students = await sc.getStudentsByDegree(degreeID);
+      console.log(degreeID + ": " + students);
+    }
+
+  }
+}
+
+const listMyDegrees = async(sc: any) => {
+
+  let mnemonic = readLineSync.question("Sign In with your mnemonic: ");
+
+  //mnemonic = "thrive honey describe tent present know tuition whip lock smoke fish client either duty invite marriage bean lion rule physical move upper crew sorry"
+  var student1 = ethers.Wallet.fromMnemonic(mnemonic)
+  
+  let degrees = await sc.getDegreesByStudent(student1.address);
+
+  console.log(degrees);
+}
+
+const listMyTitles = async(sc: any) => {
+
+  let mnemonic = readLineSync.question("Sign In with your mnemonic: ");
+
+  //mnemonic = "thrive honey describe tent present know tuition whip lock smoke fish client either duty invite marriage bean lion rule physical move upper crew sorry"
+  var student1 = ethers.Wallet.fromMnemonic(mnemonic)
+  
+  let degrees = await sc.getTitlesByStudent(student1.address);
+
+  console.log(degrees);
+}
+
 const prescribe = async(sc: any) => {
   const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, healtMinistry] = await ethers.getSigners();
 
@@ -356,6 +402,22 @@ const dispatch = async(sc: any) => {
 
 const emitTitle = async(sc: any) => {
   const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, healtMinistry] = await ethers.getSigners();
+
+  //let mnemonic = readLineSync.question("Sign In with your mnemonic: ");
+  //var universityAdmin = ethers.Wallet.fromMnemonic(mnemonic)
+
+  //var factory = await ethers.getContractFactory("AcademicApp"); // change the user who sign the transactionn
+  //factory = factory.connect(universityAdmin); // change the user who sign the transactionn
+  //const healthApp = await factory.attach(smartContracts.ACADEMIC_APP);
+
+  let titleID = readLineSync.question("Title ID: ");
+  let institutionID = readLineSync.question("Institution ID: ");
+  let degreeID = readLineSync.question("Degree ID: ");
+  //let studentID = readLineSync.question("Student ID: ");
+  let dateTime = new Date()
+  let year = dateTime.getFullYear();
+
+  await sc.emitTitle(titleID, institutionID, degreeID, student1.address, year);
 
 }
 
@@ -490,22 +552,31 @@ const academicApp = async() => {
     console.log("");
     console.log("1. List institutions")
     console.log("2. List degrees")
-    console.log("3. Add institution")
-    console.log("4. Add degree")
-    console.log("5. Add student")
-    console.log("6. Dispatch title")
+    console.log("3. List students by degree")
+    console.log("4. List my degrees")
+    console.log("5. List my titles")
+    console.log("6. Add institution")
+    console.log("7. Add degree")
+    console.log("8. Add student")
+    console.log("9. Dispatch title")
     let userRes = readLineSync.question("Pick an option: ");
     if (userRes === '1') {
       await listInstitutions(academicApp);
     } else if (userRes === '2') {
       await listDegrees(academicApp);
     } else if (userRes === '3') {
-      await addInstitution(academicApp);
+      await listStudentsByDegree(academicApp);
     } else if (userRes === '4') {
-      await addDegree(academicApp);
+      await listMyDegrees(academicApp);      
     } else if (userRes === '5') {
-      await addStudent(academicApp);
+      await listMyTitles(academicApp);          
     } else if (userRes === '6') {
+      await addInstitution(academicApp);
+    } else if (userRes === '7') {
+      await addDegree(academicApp);
+    } else if (userRes === '8') {
+      await addStudent(academicApp);
+    } else if (userRes === '9') {
       await emitTitle(academicApp);
     } 
   }
