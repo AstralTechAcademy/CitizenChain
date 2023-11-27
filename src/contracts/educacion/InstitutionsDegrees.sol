@@ -23,4 +23,17 @@ contract InstitutionsDegrees is StorageStringBasic {
   function getDegreesByInstitution(string memory institutionID) external view returns (string[] memory) {
     return registry_[institutionID];
   }
+
+  function isDegreeInInstitution(string memory degreeID, string memory institutionID) external view returns (bool) {
+    require(exist2(institutionID), "The institution does not exist");
+    string[] memory degrees = registry_[institutionID];
+
+    for (uint256 index = 0; index < degrees.length; index++)
+    {
+      if(equals(degrees[index], degreeID))
+        return true;
+    }
+
+    return false;
+  }
 }

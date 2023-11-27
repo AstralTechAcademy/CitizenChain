@@ -29,4 +29,13 @@ contract StorageStringBasic
     function count() external view returns (uint) {
         return count_;
     } 
+
+    function exist2(string memory id) public view returns (bool) {
+        return exist_[id];
+    } 
+
+    function equals(string memory str1, string memory str2) public view returns (bool)
+    {
+        return keccak256(abi.encodePacked(str1)) == keccak256(abi.encodePacked(str2));
+    }
 }

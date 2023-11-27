@@ -38,7 +38,7 @@ const main = async(): Promise<any> => {
   
   
   // -------------------------------
-  let contracts = ["CivilRegistry",
+  let contracts = ["CivilRegistry", "Educa",
                     "AcademicApp", "Titles", "Degrees", "Institutions" , "InstitutionsDegrees", "DegreesStudents",
                     "Doctor", "Prescription", "Pharmacist", "Dispatch", "HealthSystem",
                     "Laboratory", "Medicine"];

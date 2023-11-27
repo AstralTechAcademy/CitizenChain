@@ -168,6 +168,8 @@ const newBirth = async(sc: any) => {
 
   console.log("Doctor1: " + doctor1.address)
   console.log("Citizen1: " + citizen1.address)
+  console.log("Patient1: " + patient1.address)
+  console.log("Student1: " + student1.address)
 
   let name = readLineSync.question("Name: ");
   let surname1 = readLineSync.question("Surname1: ");
@@ -232,8 +234,9 @@ const addStudent = async(sc: any) => {
 
   let degreeID = readLineSync.question("Degree ID: ");
   let studentID = readLineSync.question("Student ID: ");
+  let institutionID = readLineSync.question("Institution ID: ");
 
-  await sc.addStudent(studentID, degreeID);
+  await sc.addStudent(studentID, institutionID, degreeID);
 }
 
 const list = async(sc: any) => {
@@ -355,9 +358,12 @@ const listMyTitles = async(sc: any) => {
   //mnemonic = "thrive honey describe tent present know tuition whip lock smoke fish client either duty invite marriage bean lion rule physical move upper crew sorry"
   var student1 = ethers.Wallet.fromMnemonic(mnemonic)
   
-  let degrees = await sc.getTitlesByStudent(student1.address);
+  let titles = await sc.getTitlesByStudent(student1.address);
 
-  console.log(degrees);
+  console.log(titles);
+
+  for(let title of titles)
+    console.log(await sc.getTitle(title));
 }
 
 const prescribe = async(sc: any) => {
@@ -403,12 +409,12 @@ const dispatch = async(sc: any) => {
 const emitTitle = async(sc: any) => {
   const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, healtMinistry] = await ethers.getSigners();
 
-  //let mnemonic = readLineSync.question("Sign In with your mnemonic: ");
-  //var universityAdmin = ethers.Wallet.fromMnemonic(mnemonic)
+  let mnemonic = readLineSync.question("Sign In with your mnemonic: ");
+  var signer = ethers.Wallet.fromMnemonic(mnemonic)
 
-  //var factory = await ethers.getContractFactory("AcademicApp"); // change the user who sign the transactionn
-  //factory = factory.connect(universityAdmin); // change the user who sign the transactionn
-  //const healthApp = await factory.attach(smartContracts.ACADEMIC_APP);
+  var factory = await ethers.getContractFactory("AcademicApp"); // change the user who sign the transactionn
+  factory = factory.connect(admin); // change the user who sign the transactionn
+  const academicApp = await factory.attach(smartContracts.ACADEMIC_APP);
 
   let titleID = readLineSync.question("Title ID: ");
   let institutionID = readLineSync.question("Institution ID: ");
@@ -417,7 +423,7 @@ const emitTitle = async(sc: any) => {
   let dateTime = new Date()
   let year = dateTime.getFullYear();
 
-  await sc.emitTitle(titleID, institutionID, degreeID, student1.address, year);
+  await academicApp.emitTitle(titleID, institutionID, degreeID, student1.address, year);
 
 }
 

@@ -30,4 +30,15 @@ contract DegreesStudents is StorageStringBasic {
   function getStudentsByDegree(string memory degreeID) external view returns (address[] memory) {
     return degree2Students[degreeID];
   }
+
+  function isStudentInDegree(string memory degreeID, address studentID) external view returns (bool)
+  {
+    string[] memory degrees = student2Degrees[studentID];
+    for(uint256 i = 0; i < degrees.length; i++)
+    {
+      if(keccak256(abi.encodePacked(degrees[i])) == keccak256(abi.encodePacked(degreeID)))
+        return true;
+    }
+    return false; 
+  }
 }

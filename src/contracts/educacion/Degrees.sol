@@ -28,4 +28,8 @@ contract Degrees is StorageStringBasic {
   function getDegree(string memory id) external view returns (Degree memory) {
     return degrees_[id];
   }
+
+  function degreeExist(string memory id) external view returns (bool) {
+    return exist2(id);
+  }
 }

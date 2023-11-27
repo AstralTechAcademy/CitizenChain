@@ -78,6 +78,9 @@ export default {
       },
       {
         version: "0.8.0"
+      },
+      {
+        version: "0.8.19"
       }
     ]
   },
@@ -100,7 +103,7 @@ export default {
       url: 'https://api.avax-test.network/ext/bc/C/rpc',
       gasPrice: 225000000000,
       chainId: 43113,
-      accounts: []
+      accounts: testAccounts
     },
     mainnet: {
       url: 'https://api.avax.network/ext/bc/C/rpc',
