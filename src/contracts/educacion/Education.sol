@@ -31,10 +31,19 @@ contract AcademicApp
     if(modifierActive)
     {
       require(msg.sender == admin, "The signer has not the admin role, this action requires admin role");
-
     }
     _;
   }
+
+  modifier isAdminAC()
+  {
+      if(modifierActive)
+      {
+          AccessControl ac = AccessControl(dns.getAddress("AC"));
+          require(ac.has("academic.admin", msg.sender), "The sender cannot perform this action");
+      }
+      _;
+  }  
 
   modifier isActive() {
     if(modifierActive)

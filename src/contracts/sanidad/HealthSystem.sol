@@ -13,47 +13,62 @@ import "../common/Dns.sol";
 contract HealthSystem
 {
     address private owner_;
-    Dns dns = Dns(0x7B4982e1F7ee384F206417Fb851a1EB143c513F9);
+    Dns dns = Dns(0x55a4eDd8A2c051079b426E9fbdEe285368824a89);
     mapping(string => address) private contracts_;
+    bool contractActive;
+    bool modifierActive;    
     constructor() public
     {
         owner_ = msg.sender;
-        contracts_["Doctors"] = 0xa1E47689f396fED7d18D797d9D31D727d2c0d483;
-        contracts_["Dispatch"] = 0x9c4cD519100100ec3B3c7bff3Df7f52b575F5558;
-        contracts_["Prescription"] = 0x224A8113006f2c986217A832e364D676C19C7c21;
-        contracts_["Pharmacist"] = 0x20BC04ad10B6300F542e694f8c3aB44DB8Caac65;
+        contractActive = true;
+        modifierActive = true;
     }
 
     modifier isAdmin()
     {
-        AccessControl ac = AccessControl(dns.getAddress("AC"));
-        require(ac.has("health.admin", msg.sender), "The sender cannot perform this action");
+        if(modifierActive)
+        {
+            AccessControl ac = AccessControl(dns.getAddress("AC"));
+            require(ac.has("health.admin", msg.sender), "The sender cannot perform this action");
+        }
         _;
     }
 
     modifier isPerson(address id)
     {
-        CivilRegistry ac = CivilRegistry(dns.getAddress("Civil"));
-        require(ac.alive(id), "The address is not a person registered in the civil registry");
+        if(modifierActive)
+        {
+            CivilRegistry ac = CivilRegistry(dns.getAddress("Civil"));
+            require(ac.alive(id), "The address is not a person registered in the civil registry");
+        }
         _;
     }
 
     modifier isDoctorActive()
     {
-        require(Doctor(dns.getAddress("Doctors")).isActive(msg.sender) == true, "The sender is not an active doctor");
+        if(modifierActive)
+        {
+            require(Doctor(dns.getAddress("Doctors")).isActive(msg.sender) == true, "The sender is not an active doctor");
+        }
         _;
     }
 
     modifier isPharmacistActive()
     {
-        require(Pharmacist(dns.getAddress("Pharmacist")).isActive(msg.sender) == true, "The sender is not an active pharmacist");
+        if(modifierActive)
+        {
+            require(Pharmacist(dns.getAddress("Pharmacist")).isActive(msg.sender) == true, "The sender is not an active pharmacist");
+        }
         _;
     }
 
     modifier prescriptionNotExpired(uint id)
     {
-        require(Prescription(dns.getAddress("Prescription")).isExpired(id) == false, "The prescription has expired");
-        _;
+        if(modifierActive)
+        {
+            require(Prescription(dns.getAddress("Prescription")).isExpired(id) == false, "The prescription has expired");
+        }
+        _;        
     }
 
     function prescribe(uint id,
