@@ -38,6 +38,7 @@
     "institutions": "npx hardhat run main/Institutions.ts --network local",
     "main_ac": "npx hardhat run main/Main_AC.ts --network local",
     "dns": "npx hardhat run main/Dns.ts --network local",
+    "generateTitles": "npx hardhat run main/GenerateTitles.ts",
     "educa": "npx hardhat run main/Educa.ts --network fuji",
     "doctors": "npx hardhat run main/Doctors.ts --network local",
     "pharmacists": "npx hardhat run main/Pharmacists.ts --network local",

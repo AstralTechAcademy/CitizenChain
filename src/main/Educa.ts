@@ -22,7 +22,7 @@ const main = async(): Promise<any> => {
 
     await new Promise(f => setTimeout(f, 2000));
   
-    console.log(await sc.safeMint(citizen1.address, 0));
+    console.log(await sc.safeMint(citizen1.address, 1701286683));
 
 }
 

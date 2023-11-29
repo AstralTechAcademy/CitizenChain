@@ -11,7 +11,7 @@ contract Educa is ERC721 {
     {}
 
     function _baseURI() internal pure override returns (string memory) {
-        return "https://jade-negative-emu-951.mypinata.cloud/ipfs/QmWoW7Rw5CEn8FjYdz5pzhQ3HPUUKVxvN1mYMF69L4yas8/";
+        return "https://jade-negative-emu-951.mypinata.cloud/ipfs/QmZ4BdPhm5FKcZpWTd6H2Sf6MYhahaDKG6xqVrteRj8LWy/";
     }
 
     function safeMint(address to, uint256 tokenId) public {
