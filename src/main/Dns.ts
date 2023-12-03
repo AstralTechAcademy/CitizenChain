@@ -30,6 +30,9 @@ const main = async(): Promise<any> => {
       if (userRes === '1') {
         try
         {
+          await sc.addRegistry("EducationData", smartContracts.EDUCATION_DATA);
+          await sc.addRegistry("HealthData", smartContracts.HEALTH_DATA);
+
           await sc.addRegistry("Civil", smartContracts.CIVIL_REGISTER);
           await sc.addRegistry("AC", smartContracts.ACCESS_CONTROL);
           await sc.addRegistry("Doctors", smartContracts.DOCTORS);
@@ -53,6 +56,10 @@ const main = async(): Promise<any> => {
       else if (userRes === '2') {
         try
         {
+
+          await sc.updateRegistry("EducationData", smartContracts.EDUCATION_DATA);
+          await sc.updateRegistry("HealthData", smartContracts.HEALTH_DATA);
+
           await sc.updateRegistry("Civil", smartContracts.CIVIL_REGISTER);
           await sc.updateRegistry("AC", smartContracts.ACCESS_CONTROL);
           await sc.updateRegistry("Doctors", smartContracts.DOCTORS);
@@ -62,6 +69,7 @@ const main = async(): Promise<any> => {
           await sc.updateRegistry("Laboratory", smartContracts.LABORATORY);
           await sc.updateRegistry("Dispatch", smartContracts.DISPATCH);
           await sc.updateRegistry("AcademicApp", smartContracts.ACADEMIC_APP);
+          await sc.updateRegistry("EducationData", smartContracts.EDUCATION_DATA);
           await sc.updateRegistry("Institutions", smartContracts.INSTITUTIONS);
           await sc.updateRegistry("Degrees", smartContracts.DEGREES);
           await sc.updateRegistry("Titles", smartContracts.TITLES);         

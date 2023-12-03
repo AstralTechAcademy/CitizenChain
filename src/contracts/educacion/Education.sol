@@ -3,18 +3,14 @@ pragma solidity >=0.6.0 <0.8.0;
 pragma experimental ABIEncoderV2;
 
 import "./EducationAC.sol";
-import "./Institutions.sol";
-import "./InstitutionsDegrees.sol";
-import "./DegreesStudents.sol";
-import "./Titles.sol";
-import "./Degrees.sol";
+import "./EducationData.sol";
 import "../common/Dns.sol";
 import "../common/CivilRegistry.sol";
 
 contract AcademicApp
 {
   address private owner_;
-  Dns dns = Dns(0x55a4eDd8A2c051079b426E9fbdEe285368824a89);
+  Dns dns = Dns(0x52C84043CD9c865236f11d9Fc9F56aa003c1f922);
   mapping(string => address) private contracts_;
   address admin;
   bool contractActive;
@@ -57,8 +53,8 @@ contract AcademicApp
   {
     if(modifierActive)
     {
-      require(Degrees(dns.getAddress("Degrees")).degreeExist(degreeID), "The degree does not exist");
-      require(DegreesStudents(dns.getAddress("DegreesStudents")).isStudentInDegree(degreeID, studentID), "The student is not in the degree");
+      require(EducationData(dns.getAddress("EducationData")).degreeExist(degreeID), "The degree does not exist");
+      require(EducationData(dns.getAddress("EducationData")).isStudentInDegree(degreeID, studentID), "The student is not in the degree");
     }
     _;
   }
@@ -67,8 +63,8 @@ contract AcademicApp
   {
     if(modifierActive)
     {
-      require(Degrees(dns.getAddress("Degrees")).degreeExist(degreeID), "The degree does not exist");
-      require(!DegreesStudents(dns.getAddress("DegreesStudents")).isStudentInDegree(degreeID, studentID), "The student is in the degree");
+      require(EducationData(dns.getAddress("EducationData")).degreeExist(degreeID), "The degree does not exist");
+      require(!EducationData(dns.getAddress("EducationData")).isStudentInDegree(degreeID, studentID), "The student is in the degree");
     }
     _;
   }
@@ -77,7 +73,7 @@ contract AcademicApp
   {
     if(modifierActive)
     {
-      require(Institutions(dns.getAddress("Institutions")).isSigner(msg.sender, institutionID), "The sender is not a signer for this intitution");
+      require(EducationData(dns.getAddress("EducationData")).isSigner(msg.sender, institutionID), "The sender is not a signer for this intitution");
     }
     _;
   }
@@ -86,7 +82,7 @@ contract AcademicApp
   {
     if(modifierActive)
     {
-      require(InstitutionsDegrees(dns.getAddress("InstitutionsDegrees")).isDegreeInInstitution(degreeID, institutionID), "The degree is not available in this institution");
+      require(EducationData(dns.getAddress("EducationData")).isDegreeInInstitution(degreeID, institutionID), "The degree is not available in this institution");
     }
     _;
   }
@@ -101,60 +97,60 @@ contract AcademicApp
   }
 
   function addInstitution(string memory id, string memory name) external isAdmin()  isActive() {
-    Institutions(dns.getAddress("Institutions")).addInstitution(id, name);
+    EducationData(dns.getAddress("EducationData")).addInstitution(id, name);
   }
 
   function addDegree(string memory degreeID, string memory name, string memory institutionID) external isAdmin() isActive() {
-    Degrees(dns.getAddress("Degrees")).addDegree(degreeID, name);
-    InstitutionsDegrees(dns.getAddress("InstitutionsDegrees")).addDegree(institutionID, degreeID);
+    EducationData(dns.getAddress("EducationData")).addDegree(degreeID, name);
+    EducationData(dns.getAddress("EducationData")).addDegreeInInstitution(institutionID, degreeID);
   }
 
   function addStudent(address student, string memory institution, string memory degree) external isActive() isPersonAlive(student) notStudentInDegree(degree, student) isInstitutionSigner(institution) isDegreeInInstitution(degree, institution) {
-    DegreesStudents(dns.getAddress("DegreesStudents")).addStudent(student, degree);
+    EducationData(dns.getAddress("EducationData")).addStudent(student, degree);
   }
 
   function emitTitle(string memory id, string memory institution, string memory degree, address student, uint16 year) external isActive() isInstitutionSigner(institution) isDegreeInInstitution(degree, institution) isStudentInDegree(degree, student) {
-    Titles(dns.getAddress("Titles")).emitTitle(id, institution, degree, student, year);
+    EducationData(dns.getAddress("EducationData")).emitTitle(id, institution, degree, student, year);
   }
 
   function listInstitutions() external view isActive() returns (string[] memory)  {
-    return Institutions(dns.getAddress("Institutions")).getInstitutions();
+    return EducationData(dns.getAddress("EducationData")).getInstitutions();
   }
 
   function getInstitutions() external view isActive()  returns (string[] memory) {
-    return Institutions(dns.getAddress("Institutions")).getInstitutions();
+    return EducationData(dns.getAddress("EducationData")).getInstitutions();
   }
 
   function getInstitution(string memory id) external view isActive()  returns (Institution memory)  {
-    return Institutions(dns.getAddress("Institutions")).getInstitution(id);
+    return EducationData(dns.getAddress("EducationData")).getInstitution(id);
   }
 
   function getDegreesByInstitution(string memory id) external view isActive()  returns (string[] memory) {
-    return InstitutionsDegrees(dns.getAddress("InstitutionsDegrees")).getDegreesByInstitution(id);
+    return EducationData(dns.getAddress("EducationData")).getDegreesByInstitution(id);
   }
 
   function getDegree(string memory id) external view isActive()  returns (Degree memory) {
-    return Degrees(dns.getAddress("Degrees")).getDegree(id);
+    return EducationData(dns.getAddress("EducationData")).getDegree(id);
   }
 
   function getDegreesByStudent(address studentID) external view isActive() returns (string[] memory) {
-    return DegreesStudents(dns.getAddress("DegreesStudents")).getDegreesByStudent(studentID);
+    return EducationData(dns.getAddress("EducationData")).getDegreesByStudent(studentID);
   }
 
   function getTitlesByStudent(address studentID) external view isActive() returns (string[] memory) {
-    return Titles(dns.getAddress("Titles")).getTitlesByStudent(studentID);
+    return EducationData(dns.getAddress("EducationData")).getTitlesByStudent(studentID);
   }
 
   function getStudentsByDegree(string memory degreeID) external view isActive() returns (address[] memory) {
-    return DegreesStudents(dns.getAddress("DegreesStudents")).getStudentsByDegree(degreeID);
+    return EducationData(dns.getAddress("EducationData")).getStudentsByDegree(degreeID);
   }
 
   function getTitles() external view isActive() returns (string[] memory) {
-    return Titles(dns.getAddress("Titles")).getTitles();
+    return EducationData(dns.getAddress("EducationData")).getTitles();
   }
 
   function getTitle(string memory titleID) external view isActive() returns (Title memory) {
-    return Titles(dns.getAddress("Titles")).getTitle(titleID);
+    return EducationData(dns.getAddress("EducationData")).getTitle(titleID);
   }
 
   function removeContract() external isAdmin() isActive() {

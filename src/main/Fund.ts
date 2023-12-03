@@ -45,6 +45,8 @@ const main = async(): Promise<any> => {
   var healtMinistry = ethers.Wallet.fromMnemonic(mnemonic)
   mnemonic = "thrive honey describe tent present know tuition whip lock smoke fish client either duty invite marriage bean lion rule physical move upper crew sorry"
   var student1 = ethers.Wallet.fromMnemonic(mnemonic)
+  mnemonic = "alone dignity exhaust cannon night museum material stomach enforce make fan struggle code glory chapter solve notable artwork kidney unfair still proud stove assume"
+  var student2 = ethers.Wallet.fromMnemonic(mnemonic)
   // Labs
   mnemonic = "version drop seat blush wood keep average load protect grab once hammer toward vapor voice pyramid hurt fox alcohol aunt pulp fan network market"
   var ownerBayer = ethers.Wallet.fromMnemonic(mnemonic)
@@ -80,6 +82,7 @@ const main = async(): Promise<any> => {
   console.log(" Pharmacist1: " + pharmacist1.privateKey)
   console.log(" Patient1 : " + patient1.privateKey)
   console.log(" Student1 : " + student1.privateKey)
+  console.log(" Student2 : " + student2.privateKey)
   console.log(" HealtMinistry : " + healtMinistry.privateKey)
   console.log("\n---------------------------------------------------")
 

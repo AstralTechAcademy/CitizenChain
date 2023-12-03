@@ -2,18 +2,15 @@
 pragma solidity >=0.6.0 <0.8.0;
 pragma experimental ABIEncoderV2;
 
-import "./Prescription.sol";
-import "./Doctors.sol";
-import "./Dispatch.sol";
-import "./Laboratories.sol";
-import "./Medicines.sol";
-import "./Pharmacists.sol";
+import "./HealthData.sol";
 import "../common/Dns.sol";
+import "../common/AccessControl.sol";
+import "../common/CivilRegistry.sol";
 
 contract HealthSystem
 {
     address private owner_;
-    Dns dns = Dns(0x55a4eDd8A2c051079b426E9fbdEe285368824a89);
+    Dns dns = Dns(0x52C84043CD9c865236f11d9Fc9F56aa003c1f922);
     mapping(string => address) private contracts_;
     bool contractActive;
     bool modifierActive;    
@@ -48,7 +45,7 @@ contract HealthSystem
     {
         if(modifierActive)
         {
-            require(Doctor(dns.getAddress("Doctors")).isActive(msg.sender) == true, "The sender is not an active doctor");
+            require(HealthData(dns.getAddress("HealthData")).isActive(msg.sender) == true, "The sender is not an active doctor");
         }
         _;
     }
@@ -57,7 +54,7 @@ contract HealthSystem
     {
         if(modifierActive)
         {
-            require(Pharmacist(dns.getAddress("Pharmacist")).isActive(msg.sender) == true, "The sender is not an active pharmacist");
+            require(HealthData(dns.getAddress("HealthData")).isActive(msg.sender) == true, "The sender is not an active pharmacist");
         }
         _;
     }
@@ -66,7 +63,7 @@ contract HealthSystem
     {
         if(modifierActive)
         {
-            require(Prescription(dns.getAddress("Prescription")).isExpired(id) == false, "The prescription has expired");
+            require(HealthData(dns.getAddress("HealthData")).isExpired(id) == false, "The prescription has expired");
         }
         _;        
     }
@@ -75,80 +72,85 @@ contract HealthSystem
                     address patient,
                     string memory medicine, uint day, uint month, uint year) external isDoctorActive()
     {
-        Prescription(dns.getAddress("Prescription")).prescribe(id, patient, msg.sender, medicine, day, month, year);
+        HealthData(dns.getAddress("HealthData")).prescribe(id, patient, msg.sender, medicine, day, month, year);
     }
 
     function dispatch(uint prescriptionID,
                     uint day, uint month, uint year) external isPharmacistActive() prescriptionNotExpired(prescriptionID)
     {
-        Dispatch(dns.getAddress("Dispatch")).dispatch(prescriptionID, msg.sender, day, month, year);
+        HealthData(dns.getAddress("HealthData")).dispatch(prescriptionID, msg.sender, day, month, year);
     }
 
     function expire(uint id) external isDoctorActive()
     {
-        Prescription(dns.getAddress("Prescription")).expire(id);
+        HealthData(dns.getAddress("HealthData")).expire(id);
     }
 
     function addDoctor(address id, string memory speciality, uint collegiateID, eDoctorState status) external isAdmin() isPerson(id)
     {
-        Doctor(dns.getAddress("Doctors")).addDoctor(id, speciality, collegiateID, status);
+        HealthData(dns.getAddress("HealthData")).addDoctor(id, speciality, collegiateID, status);
     }
 
     function addPharmacist(address id, uint collegiateID) external
     {
-        Pharmacist sc = Pharmacist(dns.getAddress("Pharmacist"));
+        HealthData sc = HealthData(dns.getAddress("HealthData"));
         sc.addPharmacist(id, collegiateID, ePharmacistState.ACTIVE);
     }    
 
     function addLaboratory(string memory id, string memory name, string memory street, string memory city, string memory country, address owner) external isAdmin() isPerson(owner)
     {
-        Laboratory(dns.getAddress("Laboratory")).addLab(id, name, street, city, country, owner);
+        HealthData(dns.getAddress("HealthData")).addLab(id, name, street, city, country, owner);
     }
 
     function addMedicine(string memory id, string memory name, string memory laboratory) external
     {
-        Medicine sc = Medicine(dns.getAddress("Medicine"));
+        HealthData sc = HealthData(dns.getAddress("HealthData"));
         sc.addMedicine(id, name, laboratory, eState.DEVELOPMENT);
     }
 
     function getMedicine(string memory id) external view returns (tMedicine memory) 
     {
-        return Medicine(dns.getAddress("Medicine")).get(id);
+        return HealthData(dns.getAddress("HealthData")).getMedicine(id);
+    }
+
+    function listDoctors() external view returns (address[] memory)
+    {
+        return HealthData(dns.getAddress("HealthData")).getDoctors();
     }
 
     function listLaboratories() external view returns (string[] memory)
     {
-        return Laboratory(dns.getAddress("Laboratory")).list();
+        return HealthData(dns.getAddress("HealthData")).getLaboratories();
     }
 
     function listPharmacists() external view returns (address[] memory)
     {
-        return Pharmacist(dns.getAddress("Pharmacist")).list();
+        return HealthData(dns.getAddress("HealthData")).getPharmacists();
     }
 
     function listMedicines() external view returns (string[] memory)
     {
-        return Medicine(dns.getAddress("Medicine")).list();
+        return HealthData(dns.getAddress("HealthData")).getMedicines();
     }        
 
     function getPrescriptions() external view returns (uint[] memory)
     {
-        return Prescription(dns.getAddress("Prescription")).getPrescriptions();
+        return HealthData(dns.getAddress("HealthData")).getPrescriptions();
     }
 
     function getPrescription(uint id) external view returns (Item memory)
     {
-        return Prescription(dns.getAddress("Prescription")).getPrescription(id);
+        return HealthData(dns.getAddress("HealthData")).getPrescription(id);
     }
 
     function getPrescriptionByPatient(address id) external view returns (uint[] memory)
     {
-        return Prescription(dns.getAddress("Prescription")).getPrescriptionByPatient(id);
+        return HealthData(dns.getAddress("HealthData")).getPrescriptionByPatient(id);
     }
 
     function getDispatchesByPrescription(uint id) external view returns (tDispatch[] memory)
     {
-        return Dispatch(dns.getAddress("Dispatch")).getDispatchesByPrescription(id);
+        return HealthData(dns.getAddress("HealthData")).getDispatchesByPrescription(id);
     }
 
     function getBlockNumber() external view returns (uint)

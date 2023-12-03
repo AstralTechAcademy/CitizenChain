@@ -39,9 +39,10 @@ const main = async(): Promise<any> => {
   
   // -------------------------------
   let contracts = ["CivilRegistry", "Educa",
-                    "AcademicApp", "Titles", "Degrees", "Institutions" , "InstitutionsDegrees", "DegreesStudents",
-                    "Doctor", "Prescription", "Pharmacist", "Dispatch", "HealthSystem",
-                    "Laboratory", "Medicine"];
+                    "AcademicApp", "EducationData", 
+                    /*"Titles", "Degrees", "Institutions" , "InstitutionsDegrees", "DegreesStudents",*/
+                    /*"Doctor", "Prescription", "Pharmacist", "Dispatch","Laboratory", "Medicine"*/ 
+                    "HealthSystem", "HealthData"];
 
   for(var name of contracts)
   {
