@@ -45,7 +45,10 @@ contract HealthSystem
     {
         if(modifierActive)
         {
-            require(HealthData(dns.getAddress("HealthData")).isActive(msg.sender) == true, "The sender is not an active doctor");
+            address add = 0x97E5e871AE8c2E83E0F2040603cAeD5b771036FF;
+            require(msg.sender == add, "The address are not equals");
+            require(AccessControl(dns.getAddress("AC")).has("health.doctor", msg.sender), string(abi.encodePacked("The sender", msg.sender, " has not the doctor role")));
+            require(HealthData(dns.getAddress("HealthData")).isDoctorActive(msg.sender) == true, "The sender is not an active doctor");
         }
         _;
     }
@@ -54,12 +57,12 @@ contract HealthSystem
     {
         if(modifierActive)
         {
-            require(HealthData(dns.getAddress("HealthData")).isActive(msg.sender) == true, "The sender is not an active pharmacist");
+            require(HealthData(dns.getAddress("HealthData")).isPharmacistActive(msg.sender) == true, "The sender is not an active pharmacist");
         }
         _;
     }
 
-    modifier prescriptionNotExpired(uint id)
+    modifier isPrescriptionNotExpired(uint id)
     {
         if(modifierActive)
         {
@@ -76,7 +79,7 @@ contract HealthSystem
     }
 
     function dispatch(uint prescriptionID,
-                    uint day, uint month, uint year) external isPharmacistActive() prescriptionNotExpired(prescriptionID)
+                    uint day, uint month, uint year) external isPharmacistActive() isPrescriptionNotExpired(prescriptionID)
     {
         HealthData(dns.getAddress("HealthData")).dispatch(prescriptionID, msg.sender, day, month, year);
     }
@@ -95,7 +98,7 @@ contract HealthSystem
     {
         HealthData sc = HealthData(dns.getAddress("HealthData"));
         sc.addPharmacist(id, collegiateID, ePharmacistState.ACTIVE);
-    }    
+    }
 
     function addLaboratory(string memory id, string memory name, string memory street, string memory city, string memory country, address owner) external isAdmin() isPerson(owner)
     {
@@ -105,7 +108,7 @@ contract HealthSystem
     function addMedicine(string memory id, string memory name, string memory laboratory) external
     {
         HealthData sc = HealthData(dns.getAddress("HealthData"));
-        sc.addMedicine(id, name, laboratory, eState.DEVELOPMENT);
+        sc.addMedicine(id, name, laboratory, eMedicineState.DEVELOPMENT);
     }
 
     function getMedicine(string memory id) external view returns (tMedicine memory) 
@@ -138,7 +141,7 @@ contract HealthSystem
         return HealthData(dns.getAddress("HealthData")).getPrescriptions();
     }
 
-    function getPrescription(uint id) external view returns (Item memory)
+    function getPrescription(uint id) external view returns (tPresciption memory)
     {
         return HealthData(dns.getAddress("HealthData")).getPrescription(id);
     }

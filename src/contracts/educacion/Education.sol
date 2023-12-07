@@ -11,7 +11,6 @@ contract AcademicApp
 {
   address private owner_;
   Dns dns = Dns(0x52C84043CD9c865236f11d9Fc9F56aa003c1f922);
-  mapping(string => address) private contracts_;
   address admin;
   bool contractActive;
   bool modifierActive;
@@ -49,40 +48,12 @@ contract AcademicApp
     _;
   }
 
-  modifier isStudentInDegree(string memory degreeID, address studentID)
+  modifier isDirector(string memory institutionID)
   {
     if(modifierActive)
     {
-      require(EducationData(dns.getAddress("EducationData")).degreeExist(degreeID), "The degree does not exist");
-      require(EducationData(dns.getAddress("EducationData")).isStudentInDegree(degreeID, studentID), "The student is not in the degree");
-    }
-    _;
-  }
-
-  modifier notStudentInDegree(string memory degreeID, address studentID)
-  {
-    if(modifierActive)
-    {
-      require(EducationData(dns.getAddress("EducationData")).degreeExist(degreeID), "The degree does not exist");
-      require(!EducationData(dns.getAddress("EducationData")).isStudentInDegree(degreeID, studentID), "The student is in the degree");
-    }
-    _;
-  }
-
-  modifier isInstitutionSigner(string memory institutionID)
-  {
-    if(modifierActive)
-    {
-      require(EducationData(dns.getAddress("EducationData")).isSigner(msg.sender, institutionID), "The sender is not a signer for this intitution");
-    }
-    _;
-  }
-
-  modifier isDegreeInInstitution(string memory degreeID, string memory institutionID)
-  {
-    if(modifierActive)
-    {
-      require(EducationData(dns.getAddress("EducationData")).isDegreeInInstitution(degreeID, institutionID), "The degree is not available in this institution");
+      require(AccessControl(dns.getAddress("AC")).has("academic.director", msg.sender), "The sender has not the director role");
+      require(EducationData(dns.getAddress("EducationData")).isDirector(msg.sender, institutionID), "The sender is not a signer for this intitution");
     }
     _;
   }
@@ -96,8 +67,8 @@ contract AcademicApp
     _;
   }
 
-  function addInstitution(string memory id, string memory name) external isAdmin()  isActive() {
-    EducationData(dns.getAddress("EducationData")).addInstitution(id, name);
+  function addInstitution(string memory id, string memory name, address director) external isAdmin()  isActive() {
+    EducationData(dns.getAddress("EducationData")).addInstitution(id, name, director);
   }
 
   function addDegree(string memory degreeID, string memory name, string memory institutionID) external isAdmin() isActive() {
@@ -105,11 +76,11 @@ contract AcademicApp
     EducationData(dns.getAddress("EducationData")).addDegreeInInstitution(institutionID, degreeID);
   }
 
-  function addStudent(address student, string memory institution, string memory degree) external isActive() isPersonAlive(student) notStudentInDegree(degree, student) isInstitutionSigner(institution) isDegreeInInstitution(degree, institution) {
-    EducationData(dns.getAddress("EducationData")).addStudent(student, degree);
+  function addStudent(address student, string memory institution, string memory degree) external isActive() isPersonAlive(student) isDirector(institution) {
+    EducationData(dns.getAddress("EducationData")).addStudent(student, degree, institution);
   }
 
-  function emitTitle(string memory id, string memory institution, string memory degree, address student, uint16 year) external isActive() isInstitutionSigner(institution) isDegreeInInstitution(degree, institution) isStudentInDegree(degree, student) {
+  function emitTitle(string memory id, string memory institution, string memory degree, address student, uint16 year) external isActive() isDirector(institution) {
     EducationData(dns.getAddress("EducationData")).emitTitle(id, institution, degree, student, year);
   }
 

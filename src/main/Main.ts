@@ -13,7 +13,7 @@ import {eRole, smartContracts} from "./Constants";
 
 const loadTestData = async() => {
   // Load hardhat.config.ts addresses
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
   console.log("DNS test data")
 
@@ -26,11 +26,6 @@ const loadTestData = async() => {
   {
     await sc.addRegistry("Civil", smartContracts.CIVIL_REGISTER);
     await sc.addRegistry("AC", smartContracts.ACCESS_CONTROL);
-    await sc.addRegistry("Doctors", smartContracts.DOCTORS);
-    await sc.addRegistry("Pharmacist", smartContracts.PHARMACIST);
-    await sc.addRegistry("Prescription", smartContracts.PRESCRIPTION);
-    await sc.addRegistry("Laboratory", smartContracts.LABORATORY);
-    await sc.addRegistry("Dispatch", smartContracts.DISPATCH);
   } 
   catch
   {
@@ -46,18 +41,35 @@ const loadTestData = async() => {
   acFactory = acFactory.connect(admin); // change the user who sign the transaction
   const ac = await acFactory.attach(smartContracts.ACCESS_CONTROL);
 
-  try
-  {
-    ac.createRole("health.admin");
-    await new Promise(f => setTimeout(f, 1000));
-    ac.assign("health.admin", admin.address);
-  } 
-  catch
-  {
-    console.log("User already assigned in role health.admin");
-  }
+  try { await ac.createRole("health.admin"); } catch {}
+  try { await ac.createRole("health.doctor"); } catch {}
+  try { await ac.createRole("health.pharma"); } catch {}
+  try { await ac.createRole("health.nurse"); } catch {}
+  try { await ac.createRole("sys.admin"); } catch {}
+  try { await ac.createRole("sys.read"); } catch {}
+  try { await ac.createRole("sys.writer"); } catch {}
+  try { await ac.createRole("civil.admin"); } catch {}
+  try { await ac.createRole("civil.employee"); } catch {}
+  try { await ac.createRole("civil.administration"); } catch {}
+  try { await ac.createRole("academic.admin"); } catch {}
+  try { await ac.createRole("academic.director"); } catch {}
+  try { await ac.createRole("academic.student"); } catch {}
 
-  await new Promise(f => setTimeout(f, 1000));
+  await new Promise(f => setTimeout(f, 6000));
+
+  try { await ac.assign("health.admin", admin.address); } catch {}
+  try { await ac.assign("sys.admin", admin.address); } catch {}
+  try { await ac.assign("civil.admin", admin.address); } catch {}
+  try { await ac.assign("health.doctor", "0x97E5e871AE8c2E83E0F2040603cAeD5b771036FF"); } catch {console.log("User not added in doctor role");}
+  try { await ac.assign("health.doctor", doctor1.address); } catch {console.log("User not added in doctor role");}
+  try { await ac.assign("academic.director", director.address); } catch {console.log("User not added in doctor role");}
+  try { await ac.assign("civil.administration", funcionario.address); } catch {console.log("User not added in doctor role");}
+
+  await new Promise(f => setTimeout(f, 6000));
+
+  ac.on("assigned", (timestamp:string, addr:string) => {
+    console.log("[" + timestamp + "] User " + addr + " added in access control");
+  })
 
   console.log("Civil Registry test data")
 
@@ -77,13 +89,19 @@ const loadTestData = async() => {
     name = "Maria Pilar";
     surname1 = "Rodríguez";
     surname2 = "Otamendi";
-    address = citizen1.address;
+    address = director.address;
     await civilApp.newBirth(address, name, surname1, surname2);
 
     name = "Carmen";
     surname1 = "Jiménez";
     surname2 = "Fuentes";
     address = pharmacist1.address;
+    await civilApp.newBirth(address, name, surname1, surname2);
+
+    name = "David";
+    surname1 = "del pino";
+    surname2 = "Ballesteros";
+    address = funcionario.address;
     await civilApp.newBirth(address, name, surname1, surname2);
 
     name = "Pilar";
@@ -106,7 +124,7 @@ const loadTestData = async() => {
 
 
 const civilApp = async() => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
   // Load contract already deployed in the subnet
   var civilFactory = await ethers.getContractFactory("CivilRegistry"); // change the user who sign the transactionn
@@ -116,8 +134,8 @@ const civilApp = async() => {
   let userRes;
   while (userRes !== '0') {
     console.log("");
-    console.log("1. Show people")
-    console.log("2. Register new birth")
+    console.log("1. Show citizens")
+    console.log("2. Register citizen")
     let userRes = readLineSync.question("Pick an option: ");
     if (userRes === '1') {
       await showPeople(civilApp);
@@ -128,16 +146,15 @@ const civilApp = async() => {
 }
 
 const addLaboratory = async(sc: any) => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, 
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, 
           doctor1, pharmacist1, patient1, student1, student2, healtMinistry,
-          ownerBayer, ownerPfizer, ownerGrifols, bayer, pfizer, grifols] = await ethers.getSigners();
+          ownerBayer, ownerPfizer, ownerGrifols, bayer, pfizer] = await ethers.getSigners();
 
   console.log("Owner Bayer: " + ownerBayer.address)
   console.log("Owner Pfizer: " + ownerPfizer.address)
   console.log("Owner Grifols: " + ownerGrifols.address)
   console.log("Bayer: " + bayer.address)
   console.log("Pfizer: " + pfizer.address)
-  console.log("Grifols: " + grifols.address)
 
   let cif = readLineSync.question("Laboratie CIF: ");
   let name = readLineSync.question("Name: ");
@@ -153,16 +170,15 @@ const addLaboratory = async(sc: any) => {
 }
 
 const addMedicine = async(sc: any) => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, 
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, 
           doctor1, pharmacist1, patient1, student1, student2, healtMinistry,
-          ownerBayer, ownerPfizer, ownerGrifols, bayer, pfizer, grifols] = await ethers.getSigners();
+          ownerBayer, ownerPfizer, ownerGrifols, bayer, pfizer] = await ethers.getSigners();
 
   console.log("Owner Bayer: " + ownerBayer.address)
   console.log("Owner Pfizer: " + ownerPfizer.address)
   console.log("Owner Grifols: " + ownerGrifols.address)
   console.log("Bayer: " + bayer.address)
   console.log("Pfizer: " + pfizer.address)
-  console.log("Grifols: " + grifols.address)
 
   let id = readLineSync.question("Medicine ID: ");
   let name = readLineSync.question("Medicine Name: ");
@@ -176,10 +192,10 @@ const addMedicine = async(sc: any) => {
 }
 
 const newBirth = async(sc: any) => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
   console.log("Doctor1: " + doctor1.address)
-  console.log("Citizen1: " + citizen1.address)
+  console.log("Director: " + director.address)
   console.log("Patient1: " + patient1.address)
   console.log("Student1: " + student1.address)
 
@@ -192,7 +208,7 @@ const newBirth = async(sc: any) => {
 }
 
 const addDoctor = async(sc: any) => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
   console.log("Doctor1: " + doctor1.address)
 
@@ -208,7 +224,7 @@ const addDoctor = async(sc: any) => {
 }
 
 const addPharmacist = async(sc: any) => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
   console.log("Pharmacist1: " + pharmacist1.address)
 
@@ -218,8 +234,8 @@ const addPharmacist = async(sc: any) => {
   await sc.addPharmacist(bID, collegiateID);
 }
 
-const addDegree = async(sc: any) => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+const  addDegree = async(sc: any) => {
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
   await listInstitutions(sc);
 
@@ -231,16 +247,20 @@ const addDegree = async(sc: any) => {
 }
 
 const addInstitution = async(sc: any) => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
   let name = readLineSync.question("Name: ");
   let id = readLineSync.question("Institution ID: ");
 
-  await sc.addInstitution(id, name);
+  await sc.addInstitution(id, name, director.address);
 }
 
 const addStudent = async(sc: any) => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+
+  var factory = await ethers.getContractFactory("AcademicApp"); // change the user who sign the transactionn
+  factory = factory.connect(director); // change the user who sign the transactionn
+  const academicApp = await factory.attach(smartContracts.ACADEMIC_APP);
 
   console.log("Student1: " + student1.address)
 
@@ -248,7 +268,7 @@ const addStudent = async(sc: any) => {
   let studentID = readLineSync.question("Student ID: ");
   let institutionID = readLineSync.question("Institution ID: ");
 
-  await sc.addStudent(studentID, institutionID, degreeID);
+  await academicApp.addStudent(studentID, institutionID, degreeID);
 }
 
 const list = async(sc: any) => {
@@ -379,8 +399,22 @@ const listMyTitles = async(sc: any) => {
 }
 
 const prescribe = async(sc: any) => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
+  console.log("Doctor 24 words: half flash equip rifle city print shoulder all chest song doctor rail pledge live until noise feature alcohol actress spell spoon expand town tonight");
+  console.log("Funcionario 24 words: sausage shadow board sell skill year radio ill fun grunt select sample invite setup level stick lumber worth creek amount example federal mask until");
+
+  let mnemonic = readLineSync.question("Sign In with your mnemonic: ");
+  var wallet = ethers.Wallet.fromMnemonic(mnemonic, "m/44'/60'/0'/0/0");
+
+  let user = new ethers.Wallet(wallet.privateKey, new ethers.providers.JsonRpcProvider("http://localhost:9650/ext/bc/spain/rpc"));
+
+  console.log(wallet.privateKey)
+  console.log(wallet.address)
+
+  var healthFactory = await ethers.getContractFactory("HealthSystem"); // change the user who sign the transactionn
+  healthFactory = healthFactory.connect(user); // change the user who sign the transactionn
+  const healthApp = await healthFactory.attach(smartContracts.HEALTH_SYSTEM);
 
   console.log("Patient1: " + patient1.address)
 
@@ -391,17 +425,12 @@ const prescribe = async(sc: any) => {
   let month = dateTime.getMonth()
   let year = dateTime.getFullYear()
 
-  // Load contract already deployed in the subnet
-  var healthFactory = await ethers.getContractFactory("HealthSystem"); // change the user who sign the transactionn
-  healthFactory = healthFactory.connect(doctor1); // change the user who sign the transactionn
-  const healthApp = await healthFactory.attach(smartContracts.HEALTH_SYSTEM);
-
   await healthApp.prescribe(Math.floor(Math.random() * (10000 - 0 + 1) + 0), patientID, medicineID, day, month, year);
 
 }
 
 const dispatch = async(sc: any) => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
   let prescriptionID = readLineSync.question("Presciption ID: ");
   let dateTime = new Date()
@@ -419,13 +448,13 @@ const dispatch = async(sc: any) => {
 }
 
 const emitTitle = async(sc: any) => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
   let mnemonic = readLineSync.question("Sign In with your mnemonic: ");
   var signer = ethers.Wallet.fromMnemonic(mnemonic)
 
   var factory = await ethers.getContractFactory("AcademicApp"); // change the user who sign the transactionn
-  factory = factory.connect(admin); // change the user who sign the transactionn
+  factory = factory.connect(director); // change the user who sign the transactionn
   const academicApp = await factory.attach(smartContracts.ACADEMIC_APP);
 
   let titleID = readLineSync.question("Title ID: ");
@@ -440,7 +469,7 @@ const emitTitle = async(sc: any) => {
 }
 
 const showPrescriptions = async(sc: any) => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
   console.log("Patient1: " + patient1.address)
 
@@ -461,7 +490,7 @@ const showPrescriptions = async(sc: any) => {
 }
 
 const showDispatches = async(sc: any) => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
   let preID = readLineSync.question("Prescription ID: ");
 
@@ -496,22 +525,12 @@ const showPeople = async(sc: any) => {
 
 
 const healthApp = async() => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
   // Load contract already deployed in the subnet
   var healthFactory = await ethers.getContractFactory("HealthSystem"); // change the user who sign the transactionn
   healthFactory = healthFactory.connect(admin); // change the user who sign the transactionn
   const healthApp = await healthFactory.attach(smartContracts.HEALTH_SYSTEM);
-
-  // Load contract already deployed in the subnet
-  var doctorFactory = await ethers.getContractFactory("Doctor"); // change the user who sign the transactionn
-  doctorFactory = doctorFactory.connect(admin); // change the user who sign the transactionn
-  const doctorApp = await doctorFactory.attach(smartContracts.DOCTORS);
-
-  // Load contract already deployed in the subnet
-  var labactory = await ethers.getContractFactory("Laboratory"); // change the user who sign the transactionn
-  labactory = labactory.connect(admin); // change the user who sign the transactionn
-  const labApp = await labactory.attach(smartContracts.LABORATORY);
 
   let userRes;
   while (userRes !== '0') {
@@ -558,7 +577,7 @@ const healthApp = async() => {
 }
 
 const academicApp = async() => {
-  const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+  const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
   // Load contract already deployed in the subnet
   var factory = await ethers.getContractFactory("AcademicApp"); // change the user who sign the transactionn
@@ -603,7 +622,7 @@ const academicApp = async() => {
 const main = async(): Promise<any> => {
 
 // Load hardhat.config.ts addresses
-const [admin, citizen1, upm, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
+const [admin, director, funcionario, uoc, uam, teleco, computer, aero, civil, architecture, doctor1, pharmacist1, patient1, student1, student2, healtMinistry] = await ethers.getSigners();
 
 var url = 'http://localhost:9650/ext/bc/spain/rpc';
 var customHttpProvider = new ethers.providers.JsonRpcProvider(url);

@@ -16,9 +16,9 @@ const main = async(): Promise<any> => {
 
   // Institutions
   var mnemonic = "sausage shadow board sell skill year radio ill fun grunt select sample invite setup level stick lumber worth creek amount example federal mask until"
-  var upm = ethers.Wallet.fromMnemonic(mnemonic)
+  var funcionario = ethers.Wallet.fromMnemonic(mnemonic)
   mnemonic = "green broccoli net drama harsh enemy luggage system market sting identify profit love base write feature symptom balance favorite portion tourist sheriff element broccoli"
-  var uoc = ethers.Wallet.fromMnemonic(mnemonic)
+  var director = ethers.Wallet.fromMnemonic(mnemonic)
   mnemonic = "hospital tower champion spoon dumb enforce lake assist hole zoo survey inch cloth clarify sting lift arrow eight cage expose worth install whisper bonus"
   var uam = ethers.Wallet.fromMnemonic(mnemonic)
 
@@ -64,8 +64,8 @@ const main = async(): Promise<any> => {
   console.log("---------------------------------------------------")
   console.log("- Claves privadas de las instituciones y escuelas -")
   console.log("---------------------------------------------------\n")
-  console.log(" UPM: " + upm.privateKey)
-  console.log(" UOC: " + uoc.privateKey)
+  console.log(" Funcionario: " + funcionario.privateKey)
+  console.log(" Director: " + director.privateKey)
   console.log(" UAM: " + uam.privateKey)
   console.log("\n")
   console.log(" Teleco: " + telecomunication.privateKey)
@@ -97,9 +97,11 @@ const main = async(): Promise<any> => {
   console.log(" Grifols : " + grifols.privateKey)
   console.log("\n---------------------------------------------------")
 
+  const [admin] = await ethers.getSigners();
+
   // Transfer funds
   const tx = {
-    to: upm.address,
+    to: funcionario.address,
     value: ethers.utils.parseEther("20000"),
     gasLimit: 21000,
     gasPrice: "0x5D21DBA00",
@@ -107,7 +109,7 @@ const main = async(): Promise<any> => {
   }
 
   const tx1 = {
-    to: uoc.address,
+    to: director.address,
     value: ethers.utils.parseEther("20000"),
     gasLimit: 21000,
     gasPrice: "0x5D21DBA00",
@@ -201,8 +203,6 @@ const main = async(): Promise<any> => {
     gasPrice: "0x5D21DBA00",
     chainId: 4543,
   }
-
-  const [admin] = await ethers.getSigners();
   
   await admin.sendTransaction(tx);
   await admin.sendTransaction(tx1);
@@ -222,8 +222,9 @@ const main = async(): Promise<any> => {
   await new Promise(f => setTimeout(f, 2000));
 
   console.log(await ethers.provider.getBalance(admin.address));
-  console.log(await ethers.provider.getBalance(upm.address));
-  console.log(await ethers.provider.getBalance(uoc.address));
+  console.log(await ethers.provider.getBalance(director.address));
+  console.log(await ethers.provider.getBalance(funcionario.address));
+  console.log(await ethers.provider.getBalance(director.address));
   console.log(await ethers.provider.getBalance(uam.address));
   console.log(await ethers.provider.getBalance(doctor1.address));
   console.log(await ethers.provider.getBalance(pharmacist1.address));

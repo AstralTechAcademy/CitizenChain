@@ -40,7 +40,7 @@ struct tLaboratory
     address owner_;
 }
 
-enum eState 
+enum eMedicineState 
 {
     DEVELOPMENT,
     PRE_CLINIC,
@@ -55,7 +55,7 @@ struct tMedicine
     string name_;
     string laboratory_;
 
-    eState state_;
+    eMedicineState state_;
 }
 
 enum ePharmacistState 
@@ -72,7 +72,7 @@ struct tPharmacist
     ePharmacistState status;
 }
 
-struct Item
+struct tPresciption
 {
     uint id_;
     address patient_;
@@ -91,7 +91,7 @@ contract HealthData {
 
     address private owner_;  
     mapping(uint => tDispatch[]) dispatches_;
-    mapping(uint => bool) exist_;
+    mapping(uint => bool) dispatchesExist_;
 
     mapping(address => tDoctor) private doctors_;
     mapping(address => bool) private doctorsExist_;
@@ -109,7 +109,7 @@ contract HealthData {
     mapping(address => bool) private pharmacistExist_;
     address[] pharmacistList_;
 
-    mapping(uint => Item) prescriptions_;
+    mapping(uint => tPresciption) prescriptions_;
     mapping(uint => bool) prescriptionsExist_;
     mapping(address => uint[]) patient2Prescriptions_;
     uint[] prescriptionList_;
@@ -177,7 +177,7 @@ contract HealthData {
                     uint day, uint month, uint year) external
     {
         dispatches_[prescriptionID].push(tDispatch(prescriptionID, day, month, year, pharmacist));
-        exist_[prescriptionID] = true;
+        dispatchesExist_[prescriptionID] = true;
     }
 
     function getDispatchesByPrescription(uint id) external view returns (tDispatch[] memory)
@@ -201,7 +201,7 @@ contract HealthData {
         return doctors_[id];
     }
 
-    function isActive(address id) external view doctorExist(id) returns (bool) 
+    function isDoctorActive(address id) external view doctorExist(id) returns (bool) 
     {
         return doctors_[id].status == eDoctorState.ACTIVE;
     }
@@ -233,7 +233,7 @@ contract HealthData {
 
     // MEDICINES
 
-    function addMedicine(string memory id, string memory name, string memory laboratory, eState state) external medicineNotExist(id)
+    function addMedicine(string memory id, string memory name, string memory laboratory, eMedicineState state) external medicineNotExist(id)
     {
         medicines_[id] = tMedicine(id, name, laboratory, state);
         medicinesExist_[id] = true;
@@ -245,7 +245,7 @@ contract HealthData {
         return medicines_[id];
     }
 
-    function changeState(string memory id, eState state) external medicineExist(id)
+    function changeMedicineState(string memory id, eMedicineState state) external medicineExist(id)
     {
         medicines_[id].state_ = state;
     }
@@ -274,7 +274,7 @@ contract HealthData {
         return pharmacists_[id].status == ePharmacistState.ACTIVE;
     }
 
-    function changeState(address id, ePharmacistState state) external pharmacistExist(id)
+    function changePharmacistState(address id, ePharmacistState state) external pharmacistExist(id)
     {
         pharmacists_[id].status = state;
     }
@@ -290,7 +290,7 @@ contract HealthData {
                     address patient, address doctor, 
                     string memory medicine, uint day, uint month, uint year) external prescriptionNotExist(id)
     {
-        prescriptions_[id] = Item(id, patient, doctor, medicine, day, month, year, false);
+        prescriptions_[id] = tPresciption(id, patient, doctor, medicine, day, month, year, false);
         patient2Prescriptions_[patient].push(id);
         prescriptionsExist_[id] = true;
         prescriptionList_.push(id);
@@ -306,7 +306,7 @@ contract HealthData {
         prescriptions_[id].expired_ = true;
     }
 
-    function getPrescription(uint id) external view prescriptionExist(id) returns (Item memory)
+    function getPrescription(uint id) external view prescriptionExist(id) returns (tPresciption memory)
     {
         return prescriptions_[id];
     }
