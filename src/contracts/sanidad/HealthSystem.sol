@@ -10,7 +10,7 @@ import "../common/CivilRegistry.sol";
 contract HealthSystem
 {
     address private owner_;
-    Dns dns = Dns(0x52C84043CD9c865236f11d9Fc9F56aa003c1f922);
+    Dns dns = Dns(0x55a4eDd8A2c051079b426E9fbdEe285368824a89);
     mapping(string => address) private contracts_;
     bool contractActive;
     bool modifierActive;    
@@ -45,8 +45,6 @@ contract HealthSystem
     {
         if(modifierActive)
         {
-            address add = 0x97E5e871AE8c2E83E0F2040603cAeD5b771036FF;
-            require(msg.sender == add, "The address are not equals");
             require(AccessControl(dns.getAddress("AC")).has("health.doctor", msg.sender), string(abi.encodePacked("The sender", msg.sender, " has not the doctor role")));
             require(HealthData(dns.getAddress("HealthData")).isDoctorActive(msg.sender) == true, "The sender is not an active doctor");
         }
@@ -105,10 +103,15 @@ contract HealthSystem
         HealthData(dns.getAddress("HealthData")).addLab(id, name, street, city, country, owner);
     }
 
+    function getLaboratory(string memory id) external view returns (tLaboratory memory) 
+    {
+        return HealthData(dns.getAddress("HealthData")).getLaboratory(id);
+    }
+
     function addMedicine(string memory id, string memory name, string memory laboratory) external
     {
         HealthData sc = HealthData(dns.getAddress("HealthData"));
-        sc.addMedicine(id, name, laboratory, eMedicineState.DEVELOPMENT);
+        sc.addMedicine(id, name, laboratory, eMedicineState.DEVELOPMENT, msg.sender);
     }
 
     function getMedicine(string memory id) external view returns (tMedicine memory) 
@@ -134,7 +137,7 @@ contract HealthSystem
     function listMedicines() external view returns (string[] memory)
     {
         return HealthData(dns.getAddress("HealthData")).getMedicines();
-    }        
+    }
 
     function getPrescriptions() external view returns (uint[] memory)
     {

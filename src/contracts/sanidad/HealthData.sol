@@ -53,7 +53,7 @@ struct tMedicine
 {
     string id_;
     string name_;
-    string laboratory_;
+    string laboratoryID_;
 
     eMedicineState state_;
 }
@@ -132,12 +132,17 @@ contract HealthData {
     }
 
     modifier laboratorieExist(string memory id) {
-        require(laboratoriesExist_[id], "The laboratorie does not exist");
+        require(laboratoriesExist_[id], "The laboratory does not exist");
         _;
     }
 
     modifier laboratorieNotExist(string memory id) {
-        require(!laboratoriesExist_[id], "The laboratorie already added");
+        require(!laboratoriesExist_[id], "The laboratory already added");
+        _;
+    }
+
+    modifier isLaboratoryOwner(string memory labID, address signer) {
+        require(laboratories_[labID].owner_ == signer, "The signer is not the owner of the laboratory");
         _;
     }
 
@@ -221,7 +226,7 @@ contract HealthData {
         laboratorieList_.push(id);
     }
 
-    function getLaboratorie(string memory id) external view laboratorieExist(id) returns (tLaboratory memory) 
+    function getLaboratory(string memory id) external view laboratorieExist(id) returns (tLaboratory memory) 
     {
         return laboratories_[id];
     }
@@ -233,7 +238,7 @@ contract HealthData {
 
     // MEDICINES
 
-    function addMedicine(string memory id, string memory name, string memory laboratory, eMedicineState state) external medicineNotExist(id)
+    function addMedicine(string memory id, string memory name, string memory laboratory, eMedicineState state, address signer) external medicineNotExist(id) laboratorieExist(laboratory) isLaboratoryOwner(laboratory, signer)
     {
         medicines_[id] = tMedicine(id, name, laboratory, state);
         medicinesExist_[id] = true;

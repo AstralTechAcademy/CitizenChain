@@ -44,6 +44,8 @@
     "pharmacists": "npx hardhat run main/Pharmacists.ts --network local",
     "healthsystem": "npx hardhat run main/HealthSystem.ts --network local",
     "deploy": "npx hardhat run scripts/deploy.ts --network local",
+    "deploy-dns": "npx hardhat run scripts/deploy-dns.ts --network local",
+    "deploy-dns-fuji": "npx hardhat run scripts/deploy-dns.ts --network fuji",
     "deploy-educa-fuji": "npx hardhat run scripts/deploy-educa.ts --network fuji",
     "erc20": "npx hardhat run scripts/erc20.ts",
     "nft": "npx hardhat run scripts/nft.ts --network mainnet",

@@ -10,7 +10,7 @@ import "../common/CivilRegistry.sol";
 contract AcademicApp
 {
   address private owner_;
-  Dns dns = Dns(0x52C84043CD9c865236f11d9Fc9F56aa003c1f922);
+  Dns dns = Dns(0x55a4eDd8A2c051079b426E9fbdEe285368824a89);
   address admin;
   bool contractActive;
   bool modifierActive;
