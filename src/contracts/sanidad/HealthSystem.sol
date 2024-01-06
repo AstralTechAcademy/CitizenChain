@@ -26,7 +26,7 @@ contract HealthSystem
         if(modifierActive)
         {
             AccessControl ac = AccessControl(dns.getAddress("AC"));
-            require(ac.has("health.admin", msg.sender), "The sender cannot perform this action");
+            require(ac.has("health.admin", msg.sender) || ac.has("civil.administration", msg.sender), "The sender cannot perform this action");
         }
         _;
     }

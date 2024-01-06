@@ -78,6 +78,7 @@ const login = async() => {
 
 
 const loadTestData = async() => {
+
   // Load hardhat.config.ts addresses
   const [admin, director, citizen1, funcionario,
     doctor1, pharmacist1, patient1, student1, student2,
@@ -92,8 +93,8 @@ const loadTestData = async() => {
 
   try
   {
-    await sc.addRegistry("Civil", smartContracts.CIVIL_REGISTER);
-    await sc.addRegistry("AC", smartContracts.ACCESS_CONTROL);
+    await sc.updateRegistry("Civil", smartContracts.CIVIL_REGISTER);
+    await sc.updateRegistry("AC", smartContracts.ACCESS_CONTROL);
   } 
   catch
   {
@@ -145,6 +146,9 @@ const loadTestData = async() => {
   civilFactory = civilFactory.connect(admin); // change the user who sign the transactionn
   const civilApp = await civilFactory.attach(smartContracts.CIVIL_REGISTER);
 
+  civilApp.on("added", (timestamp:string, currentBlockNumber: any, prevBlockBumber:any, prevBlockHash:any, name:any, surname:any) => {
+    console.log("\nNew user added " + name + " " + surname + " at [" + timestamp + "]" + "\n\r Current BlockNumber: " + currentBlockNumber + "\n\r Previous BlockNumber " +  prevBlockBumber + "\n\r Previous BlockHash " + prevBlockHash);
+  })
 
   /*name = "Francisco";
   surname1 = "Pérez";
@@ -157,43 +161,45 @@ const loadTestData = async() => {
   let surname1 = "del pino";
   let surname2 = "Ballesteros";
   let address = funcionario.address;
-  try { let res1 = await civilApp.newBirth(address, name, surname1, surname2); console.log(res1) } catch {console.log("Owner Funcionario already added")}
+  try { let res1 = await civilApp.newBirth(address, name, surname1, surname2) } catch {console.log("Owner Funcionario already added")}
+
+  await new Promise(f => setTimeout(f, 6000));
 
   name = "Olivia";
   surname1 = "Gómez";
   surname2 = "Ortega";
   address = ownerGrifols.address;
-  try { let res2 = await civilApp.newBirth(address, name, surname1, surname2); console.log(res2) } catch {console.log("Owner Grifols already added")}
+  try { let res2 = await civilApp.newBirth(address, name, surname1, surname2);} catch {console.log("Owner Grifols already added")}
 
   name = "Juan Ignacio";
   surname1 = "Riquelme";
   surname2 = "Macia";
   address = ownerPfizer.address;
-  try { let res2 = await civilApp.newBirth(address, name, surname1, surname2); console.log(res2) } catch {console.log("Owner Pfizer already added")}
+  try { let res2 = await civilApp.newBirth(address, name, surname1, surname2); } catch {console.log("Owner Pfizer already added")}
 
   name = "Maria Pilar";
   surname1 = "Rodríguez";
   surname2 = "Otamendi";
   address = director.address;
-  try { let res3 = await civilApp.newBirth(address, name, surname1, surname2); console.log(res3) } catch {console.log("Owner Director already added")}
+  try { let res3 = await civilApp.newBirth(address, name, surname1, surname2);} catch {console.log("Director already added")}
 
   name = "Carmen";
   surname1 = "Jiménez";
   surname2 = "Fuentes";
   address = pharmacist1.address;
-  try { let res4 = await civilApp.newBirth(address, name, surname1, surname2); console.log(res4) } catch {console.log("Owner Pharmacist already added")}
+  try { let res4 = await civilApp.newBirth(address, name, surname1, surname2);} catch {console.log("Pharmacist already added")}
 
   name = "Pilar";
-  surname1 = "Velansco";
+  surname1 = "Velasco";
   surname2 = "Ballesteros";
   address = student1.address;
-  try { let res5 = await civilApp.newBirth(address, name, surname1, surname2); console.log(res5) } catch {console.log("Student 'Pilar' already added")}
+  try { let res5 = await civilApp.newBirth(address, name, surname1, surname2);} catch {console.log("Student1 'Pilar' already added")}
 
   name = "Alicia";
   surname1 = "de la Fuente";
   surname2 = "Oliveros";
   address = student2.address;
-  try { let res6 = await civilApp.newBirth(address, name, surname1, surname2); console.log(res6) } catch {console.log("Student 'Alicia' already added")}
+  try { let res6 = await civilApp.newBirth(address, name, surname1, surname2);} catch {console.log("Student2 'Alicia' already added")}
 
   await new Promise(f => setTimeout(f, 6000));
 
@@ -238,8 +244,8 @@ const loadTestData = async() => {
  await healthApp1.addMedicine("J84958702", "Aspirina", "A58389123"); // } catch {console.log("Aspirina already added")}
   try { await healthApp1.addMedicine("L89443353", "Naproxeno", "A58389123"); } catch {console.log("Naproxeno already added")}
 
-  await new Promise(f => setTimeout(f, 6000));
 
+  await new Promise(f => setTimeout(f, 6000));
 }
 
 
@@ -328,6 +334,10 @@ const newBirth = async(sc: any) => {
     doctor1, pharmacist1, patient1, student1, student2,
     ownerBayer, ownerPfizer, ownerGrifols, bayer, pfizer, grifols] = await ethers.getSigners();
 
+  var factory = await ethers.getContractFactory("CivilRegistry"); // change the user who sign the transactionn
+  factory = factory.connect(signer); // change the user who sign the transactionn
+  const civilApp = await factory.attach(smartContracts.CIVIL_REGISTER);  
+
   console.log("Doctor1: " + doctor1.address)
   console.log("Director: " + director.address)
   console.log("Patient1: " + patient1.address)
@@ -339,7 +349,7 @@ const newBirth = async(sc: any) => {
   let surname2 = readLineSync.question("Surname2: ");
   let address = readLineSync.question("ID: ");
 
-  await sc.newBirth(address, name, surname1, surname2)
+  await civilApp.newBirth(address, name, surname1, surname2)
 }
 
 const death = async(sc: any) => {
@@ -360,6 +370,10 @@ const death = async(sc: any) => {
 
 const addDoctor = async(sc: any) => {
   const [admin, director, citizen1, funcionario, doctor1, pharmacist1, patient1, student1, student2] = await ethers.getSigners();
+  
+  var healthFactory = await ethers.getContractFactory("HealthSystem"); // change the user who sign the transactionn
+  healthFactory = healthFactory.connect(signer); // change the user who sign the transactionn
+  const healthApp = await healthFactory.attach(smartContracts.HEALTH_SYSTEM);
 
   console.log("Doctor1: " + doctor1.address)
 
@@ -371,7 +385,7 @@ const addDoctor = async(sc: any) => {
   collegiateID = readLineSync.question("Collegiate ID: ");
   bID = readLineSync.question("Blockchain ID: ");
 
-  await sc.addDoctor(bID, speciality, collegiateID, 1);
+  await healthApp.addDoctor(bID, speciality, collegiateID, 1);
 }
 
 const addPharmacist = async(sc: any) => {
@@ -400,17 +414,21 @@ const  addDegree = async(sc: any) => {
 const addInstitution = async(sc: any) => {
   const [admin, director, citizen1, funcionario, doctor1, pharmacist1, patient1, student1, student2] = await ethers.getSigners();
 
+  var factory = await ethers.getContractFactory("AcademicApp"); // change the user who sign the transactionn
+  factory = factory.connect(signer); // change the user who sign the transactionn
+  const academicApp = await factory.attach(smartContracts.ACADEMIC_APP);
+
   let name = readLineSync.question("Name: ");
   let id = readLineSync.question("Institution ID: ");
 
-  await sc.addInstitution(id, name, director.address);
+  await academicApp.addInstitution(id, name, director.address);
 }
 
 const addStudent = async(sc: any) => {
   const [admin, director, citizen1, funcionario, doctor1, pharmacist1, patient1, student1, student2] = await ethers.getSigners();
 
   var factory = await ethers.getContractFactory("AcademicApp"); // change the user who sign the transactionn
-  factory = factory.connect(director); // change the user who sign the transactionn
+  factory = factory.connect(signer); // change the user who sign the transactionn
   const academicApp = await factory.attach(smartContracts.ACADEMIC_APP);
 
   console.log("Student1: " + student1.address)
@@ -555,13 +573,13 @@ const listMyTitles = async(sc: any) => {
 const prescribe = async(sc: any) => {
   const [admin, director, citizen1, funcionario, doctor1, pharmacist1, patient1, student1, student2] = await ethers.getSigners();
 
-  console.log("Doctor 24 words: half flash equip rifle city print shoulder all chest song doctor rail pledge live until noise feature alcohol actress spell spoon expand town tonight");
-  console.log("Funcionario 24 words: sausage shadow board sell skill year radio ill fun grunt select sample invite setup level stick lumber worth creek amount example federal mask until");
+  //console.log("Doctor 24 words: half flash equip rifle city print shoulder all chest song doctor rail pledge live until noise feature alcohol actress spell spoon expand town tonight");
+  //console.log("Funcionario 24 words: sausage shadow board sell skill year radio ill fun grunt select sample invite setup level stick lumber worth creek amount example federal mask until");
 
-  let mnemonic = readLineSync.question("Sign In with your mnemonic: ");
-  var wallet = ethers.Wallet.fromMnemonic(mnemonic, "m/44'/60'/0'/0/0");
+  //let mnemonic = readLineSync.question("Sign In with your mnemonic: ");
+  //var wallet = ethers.Wallet.fromMnemonic(mnemonic, "m/44'/60'/0'/0/0");
 
-  let user = new ethers.Wallet(wallet.privateKey, new ethers.providers.JsonRpcProvider("http://localhost:9650/ext/bc/spain/rpc"));
+  //let user = new ethers.Wallet(wallet.privateKey, new ethers.providers.JsonRpcProvider("http://localhost:9650/ext/bc/spain/rpc"));
 
   var healthFactory = await ethers.getContractFactory("HealthSystem"); // change the user who sign the transactionn
   healthFactory = healthFactory.connect(signer); // change the user who sign the transactionn
@@ -590,8 +608,12 @@ const dispatch = async(sc: any) => {
   let year = dateTime.getFullYear()
 
   // Load contract already deployed in the subnet
+  //var healthFactory = await ethers.getContractFactory("HealthSystem"); // change the user who sign the transactionn
+  //healthFactory = healthFactory.connect(pharmacist1); // change the user who sign the transactionn
+  //const healthApp = await healthFactory.attach(smartContracts.HEALTH_SYSTEM);
+
   var healthFactory = await ethers.getContractFactory("HealthSystem"); // change the user who sign the transactionn
-  healthFactory = healthFactory.connect(pharmacist1); // change the user who sign the transactionn
+  healthFactory = healthFactory.connect(signer); // change the user who sign the transactionn
   const healthApp = await healthFactory.attach(smartContracts.HEALTH_SYSTEM);
 
   await healthApp.dispatch(prescriptionID, day, month, year);

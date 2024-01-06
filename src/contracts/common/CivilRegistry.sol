@@ -3,6 +3,7 @@ pragma solidity >=0.6.0 <0.8.0;
 pragma experimental ABIEncoderV2;
 
 import "../common/SpanishContract.sol";
+import "../common/Dns.sol";
 
 struct DNI {
     address id;
@@ -32,8 +33,12 @@ struct tPerson { // Struct
 
 contract CivilRegistry {
 
+  Dns dns = Dns(0x55a4eDd8A2c051079b426E9fbdEe285368824a89);
   address private owner_;
   uint256 number = 15;
+
+  bool contractActive;
+  bool modifierActive;    
 
   mapping(address => tPerson) private registry_;
   mapping(address => bool) private exist_;
@@ -41,7 +46,21 @@ contract CivilRegistry {
 
   constructor() public {
     owner_ = msg.sender;
+    contractActive = true;
+    modifierActive = true;
   }
+
+  modifier isCivilAdministration()
+  {
+      if(modifierActive)
+      {
+          AccessControl ac = AccessControl(dns.getAddress("AC"));
+          require(ac.has("civil.administration", msg.sender) || msg.sender == owner_, "The sender cannot perform this action");
+      }
+      _;
+  }
+
+  event added(uint indexed timestamp, uint256 currentBlockNumber, uint256 prevBlockNumber, bytes32 previousBlockhash, string name, string surname1);
 
   function add(address id, string memory name, string memory surname1, string memory surname2) external
   {
@@ -49,15 +68,16 @@ contract CivilRegistry {
     require(exist_[id] == false, "[CivilRegistry::add] The person already registered");
     registry_[id] = tPerson(id, id, name, surname1, surname2, true);
     exist_[id] = true;
+    emit added(block.timestamp, block.number , block.number - 1, blockhash(block.number - 1), name, surname1);
   }
 
-  function newBirth(address id, string memory name, string memory surname1, string memory surname2) external
+  function newBirth(address id, string memory name, string memory surname1, string memory surname2) external isCivilAdministration()
   {
-    require(msg.sender == owner_);
     require(exist_[id] == false, "[CivilRegistry::add] The person already registered");
     registry_[id] = tPerson(id, id, name, surname1, surname2, true);
     exist_[id] = true;
     addresses_.push(id);
+    emit added(block.timestamp, block.number , block.number - 1, blockhash(block.number - 1), name, surname1);
   }
 
   function list() external view returns (address[] memory)
